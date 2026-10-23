@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
@@ -12,9 +12,12 @@ import {
   UserPlus,
   Moon,
   Sun,
-  Download,
+  LogOut,
+  LogIn,
+  User as UserIcon,
 } from 'lucide-react';
 import { BrandLogo } from './BrandLogo';
+import { getCurrentOwner, ownerSignOut } from '@/lib/supabase/client';
 
 interface NavigationProps {
   onOpenAddTransaction?: () => void;
@@ -26,15 +29,18 @@ export function Navigation({
   onOpenAddPerson,
 }: NavigationProps) {
   const pathname = usePathname();
-  const [isDark, setIsDark] = React.useState(false);
+  const [isDark, setIsDark] = useState(false);
+  const [owner, setOwner] = useState<{ email: string } | null>(null);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const isDarkMode = document.documentElement.classList.contains('dark') ||
       window.matchMedia('(prefers-color-scheme: dark)').matches;
     setIsDark(isDarkMode);
     if (isDarkMode) {
       document.documentElement.classList.add('dark');
     }
+
+    getCurrentOwner().then(setOwner);
   }, []);
 
   const toggleTheme = () => {
@@ -47,6 +53,11 @@ export function Navigation({
     }
   };
 
+  const handleSignOut = async () => {
+    await ownerSignOut();
+    window.location.href = '/login';
+  };
+
   const navItems = [
     { label: 'Dashboard', href: '/', icon: LayoutDashboard },
     { label: 'People', href: '/people', icon: Users },
@@ -55,8 +66,9 @@ export function Navigation({
   ];
 
   const isPublicShare = pathname.startsWith('/share');
-  if (isPublicShare) {
-    return null; // Public share pages do not display private navigation
+  const isLoginPage = pathname === '/login';
+  if (isPublicShare || isLoginPage) {
+    return null; // Public share and login pages do not display private navigation
   }
 
   return (
@@ -116,9 +128,41 @@ export function Navigation({
           </nav>
         </div>
 
-        {/* Footer info & Theme switch */}
-        <div className="flex flex-col gap-3 pt-6 border-t border-slate-200 dark:border-slate-800">
-          <div className="flex items-center justify-between px-2">
+        {/* Footer info & Account status */}
+        <div className="flex flex-col gap-3 pt-5 border-t border-slate-200 dark:border-slate-800">
+          {/* Owner Account Card / Login Button */}
+          {owner ? (
+            <div className="flex items-center justify-between p-2 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/70 dark:border-slate-700/60 text-xs">
+              <div className="flex items-center gap-2 overflow-hidden">
+                <div className="w-6 h-6 rounded-full bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 flex items-center justify-center font-bold text-[10px] shrink-0 border border-emerald-300 dark:border-emerald-800">
+                  {owner.email.substring(0, 1).toUpperCase()}
+                </div>
+                <div className="overflow-hidden">
+                  <span className="text-[11px] font-semibold text-slate-900 dark:text-slate-200 block truncate" title={owner.email}>
+                    {owner.email}
+                  </span>
+                  <span className="text-[9px] text-emerald-600 dark:text-emerald-400 font-medium">Owner Active</span>
+                </div>
+              </div>
+              <button
+                onClick={handleSignOut}
+                title="Log Out"
+                className="p-1 rounded-md text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-colors cursor-pointer"
+              >
+                <LogOut className="w-3.5 h-3.5" />
+              </button>
+            </div>
+          ) : (
+            <Link
+              href="/login"
+              className="flex items-center justify-center gap-2 py-2 px-3 rounded-lg border border-slate-200 dark:border-slate-700 text-xs text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 font-medium transition-colors"
+            >
+              <LogIn className="w-3.5 h-3.5 text-emerald-600" />
+              <span>Owner Sign In</span>
+            </Link>
+          )}
+
+          <div className="flex items-center justify-between px-2 pt-1">
             <span className="text-xs text-slate-500 dark:text-slate-400 font-medium">Theme</span>
             <button
               onClick={toggleTheme}
@@ -140,6 +184,23 @@ export function Navigation({
           <BrandLogo size="sm" showTagline={false} />
         </Link>
         <div className="flex items-center gap-2">
+          {owner ? (
+            <button
+              onClick={handleSignOut}
+              title="Log Out"
+              className="p-2 rounded-lg text-slate-500 hover:text-rose-600"
+            >
+              <LogOut className="w-4 h-4" />
+            </button>
+          ) : (
+            <Link
+              href="/login"
+              title="Sign In"
+              className="p-2 rounded-lg text-slate-500 hover:text-slate-900"
+            >
+              <LogIn className="w-4 h-4" />
+            </Link>
+          )}
           <button
             onClick={toggleTheme}
             aria-label="Toggle theme"
