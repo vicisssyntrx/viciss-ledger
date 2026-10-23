@@ -33,10 +33,10 @@ function getLockConfig(): LockConfig {
     }
   }
 
-  // Default initial credentials: username "admin", password "admin"
+  // Default initial credentials: username "admin", password "2030"
   // (User can also provide OWNER_USERNAME / OWNER_PASSWORD in env)
   const defaultUser = process.env.OWNER_USERNAME || 'admin';
-  const defaultPass = process.env.OWNER_PASSWORD || 'admin';
+  const defaultPass = process.env.OWNER_PASSWORD || '2030';
   const salt = crypto.randomBytes(16).toString('hex');
   const passwordHash = hashPassword(defaultPass, salt);
 

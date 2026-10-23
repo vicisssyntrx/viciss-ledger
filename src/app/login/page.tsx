@@ -73,7 +73,7 @@ function LoginContent() {
           }
         }
 
-        throw new Error(data.error || 'Invalid credentials. Default: admin / admin');
+        throw new Error(data.error || 'Invalid credentials. Please check your username and password.');
       }
 
       // 2. Set client auth state
@@ -177,7 +177,7 @@ function LoginContent() {
           </form>
 
           <div className="pt-2 text-center text-[11px] text-slate-500">
-            Default credentials: <span className="font-mono text-slate-400">admin</span> / <span className="font-mono text-slate-400">admin</span>
+            Default credentials: <span className="font-mono text-slate-400">admin</span> / <span className="font-mono text-slate-400">2030</span>
           </div>
         </div>
 
