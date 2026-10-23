@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import {
   Users,
   UserPlus,
@@ -25,6 +26,7 @@ import { Person, PersonSummary } from '@/lib/accounting/types';
 import { formatINR } from '@/lib/accounting/currency';
 
 export default function PeoplePage() {
+  const router = useRouter();
   const [people, setPeople] = useState<PersonSummary[]>([]);
   const [rawPeople, setRawPeople] = useState<Person[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -202,20 +204,18 @@ export default function PeoplePage() {
               return (
                 <div
                   key={person.personId}
-                  className="p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-2xs hover:shadow-sm transition-all flex flex-col justify-between"
+                  onClick={() => router.push(`/people/${person.personId}`)}
+                  className="group p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-2xs hover:shadow-md hover:border-amber-700/40 dark:hover:border-amber-700/50 transition-all flex flex-col justify-between cursor-pointer"
                 >
                   <div>
                     {/* Header: Avatar, Name, and Sharing Badge */}
                     <div className="flex items-start justify-between gap-3 mb-3">
-                      <Link
-                        href={`/people/${person.personId}`}
-                        className="flex items-center gap-3 hover:opacity-85 transition-opacity"
-                      >
+                      <div className="flex items-center gap-3">
                         <div className="w-12 h-12 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 font-bold flex items-center justify-center text-base border border-slate-200 dark:border-slate-700">
                           {person.personName.substring(0, 2).toUpperCase()}
                         </div>
                         <div>
-                          <h3 className="text-base font-bold text-slate-900 dark:text-white">
+                          <h3 className="text-base font-bold text-slate-900 dark:text-white group-hover:text-amber-500 dark:group-hover:text-amber-400 transition-colors">
                             {person.personName}
                           </h3>
                           {person.nickname && (
@@ -224,12 +224,15 @@ export default function PeoplePage() {
                             </span>
                           )}
                         </div>
-                      </Link>
+                      </div>
 
                       <div className="flex items-center gap-1">
                         {raw && (
                           <button
-                            onClick={() => setSharePerson(raw)}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setSharePerson(raw);
+                            }}
                             title={raw.isSharingEnabled ? 'Sharing Active' : 'Enable Public Sharing'}
                             className={`p-1.5 rounded-lg border transition-colors cursor-pointer ${
                               raw.isSharingEnabled
@@ -242,7 +245,8 @@ export default function PeoplePage() {
                         )}
                         {raw && (
                           <button
-                            onClick={() => {
+                            onClick={(e) => {
+                              e.stopPropagation();
                               setPersonToEdit(raw);
                               setIsAddPersonOpen(true);
                             }}
@@ -312,7 +316,10 @@ export default function PeoplePage() {
                     <div className="flex items-center gap-2">
                       {raw?.isArchived ? (
                         <button
-                          onClick={() => handleArchive(person.personId, false)}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleArchive(person.personId, false);
+                          }}
                           className="text-[11px] text-emerald-600 dark:text-emerald-400 font-medium hover:underline flex items-center gap-1 cursor-pointer"
                         >
                           <RefreshCcw className="w-3 h-3" />
@@ -320,7 +327,10 @@ export default function PeoplePage() {
                         </button>
                       ) : (
                         <button
-                          onClick={() => handleArchive(person.personId, true)}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleArchive(person.personId, true);
+                          }}
                           className="text-[11px] text-slate-400 hover:text-slate-700 dark:hover:text-slate-300 flex items-center gap-1 cursor-pointer"
                           title="Archive person (preserves history)"
                         >
@@ -330,7 +340,8 @@ export default function PeoplePage() {
                       )}
 
                       <button
-                        onClick={() => {
+                        onClick={(e) => {
+                          e.stopPropagation();
                           if (raw) setPersonToDelete(raw);
                         }}
                         className="text-[11px] text-slate-400 hover:text-rose-600 transition-colors p-1 cursor-pointer"
@@ -340,13 +351,10 @@ export default function PeoplePage() {
                       </button>
                     </div>
 
-                    <Link
-                      href={`/people/${person.personId}`}
-                      className="inline-flex items-center gap-1 font-semibold text-slate-900 dark:text-white hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors"
-                    >
+                    <div className="inline-flex items-center gap-1 font-semibold text-slate-900 dark:text-white group-hover:text-amber-500 dark:group-hover:text-amber-400 transition-colors">
                       <span>View Ledger</span>
-                      <ChevronRight className="w-4 h-4" />
-                    </Link>
+                      <ChevronRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+                    </div>
                   </div>
                 </div>
               );

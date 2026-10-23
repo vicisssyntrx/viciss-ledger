@@ -55,8 +55,26 @@ export function Navigation({
 
   const handleSignOut = async () => {
     await ownerSignOut();
-    window.location.href = '/login';
+    window.location.replace('/login');
   };
+
+  useEffect(() => {
+    const handlePageShow = (e: PageTransitionEvent) => {
+      // If page was restored from bfcache (browser back arrow), re-verify owner session
+      if (e.persisted) {
+        getCurrentOwner().then((current) => {
+          if (!current) {
+            window.location.replace('/login');
+          } else {
+            setOwner(current);
+          }
+        });
+      }
+    };
+
+    window.addEventListener('pageshow', handlePageShow);
+    return () => window.removeEventListener('pageshow', handlePageShow);
+  }, []);
 
   const navItems = [
     { label: 'Dashboard', href: '/', icon: LayoutDashboard },

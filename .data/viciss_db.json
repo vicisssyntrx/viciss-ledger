@@ -239,6 +239,45 @@
       "sharePolicy": "ALL",
       "createdAt": "2026-10-23T18:15:03.970Z",
       "updatedAt": "2026-10-23T18:15:03.974Z"
+    },
+    {
+      "id": "person-c5b86bdb90c00f61",
+      "ownerId": "default-owner",
+      "name": "Dev Test User",
+      "nickname": "Dev",
+      "phone": "+91 99999 88888",
+      "notes": "Private developer test note",
+      "isArchived": false,
+      "shareToken": "vcs_8138bd714d7893a2a3b16d9f631a772166e6233b5dce8fac",
+      "isSharingEnabled": false,
+      "sharePolicy": "ALL",
+      "createdAt": "2026-10-23T20:10:53.401Z",
+      "updatedAt": "2026-10-23T20:10:53.401Z"
+    },
+    {
+      "id": "person-ff6c764eb226b2d4",
+      "ownerId": "default-owner",
+      "name": "Finance Test Person",
+      "isArchived": false,
+      "shareToken": "vcs_179a74c905a59c77cb11257d5fb3d773a250c428c041775c",
+      "isSharingEnabled": false,
+      "sharePolicy": "ALL",
+      "createdAt": "2026-10-23T20:10:53.436Z",
+      "updatedAt": "2026-10-23T20:10:53.436Z"
+    },
+    {
+      "id": "person-1bb48900727e4cc5",
+      "ownerId": "default-owner",
+      "name": "Public Test Person",
+      "phone": "+91 99999 00000",
+      "email": "private@test.com",
+      "notes": "Super secret personal notes",
+      "isArchived": false,
+      "shareToken": "vcs_2d6eb60a8f98584b03ab51ff053b71a20dd762e10647a446",
+      "isSharingEnabled": true,
+      "sharePolicy": "ALL",
+      "createdAt": "2026-10-23T20:10:53.442Z",
+      "updatedAt": "2026-10-23T20:10:53.449Z"
     }
   ],
   "transactions": [
@@ -594,6 +633,63 @@
       "balanceEffectPaise": 1000000,
       "createdAt": "2026-10-23T18:15:03.973Z",
       "updatedAt": "2026-10-23T18:15:03.973Z"
+    },
+    {
+      "ownerId": "default-owner",
+      "personId": "person-ff6c764eb226b2d4",
+      "type": "GIVE_MONEY",
+      "amountPaise": 400000,
+      "transactionDate": "2026-10-20",
+      "description": "Lent money",
+      "category": "Loan",
+      "isShared": true,
+      "id": "tx-905c99089301c4be",
+      "balanceEffectPaise": 400000,
+      "createdAt": "2026-10-23T20:10:53.438Z",
+      "updatedAt": "2026-10-23T20:10:53.438Z"
+    },
+    {
+      "ownerId": "default-owner",
+      "personId": "person-ff6c764eb226b2d4",
+      "type": "REPAYMENT",
+      "repaymentDirection": "THEY_REPAY_ME",
+      "amountPaise": 150000,
+      "transactionDate": "2026-10-21",
+      "description": "Part payment",
+      "category": "Repayment",
+      "isShared": true,
+      "id": "tx-6ed94cc69314b12b",
+      "balanceEffectPaise": -150000,
+      "createdAt": "2026-10-23T20:10:53.439Z",
+      "updatedAt": "2026-10-23T20:10:53.439Z"
+    },
+    {
+      "ownerId": "default-owner",
+      "personId": "person-1bb48900727e4cc5",
+      "type": "GIVE_MONEY",
+      "amountPaise": 250000,
+      "transactionDate": "2026-10-22",
+      "description": "Public dinner share",
+      "category": "Food",
+      "isShared": true,
+      "id": "tx-34139d3a523ee688",
+      "balanceEffectPaise": 250000,
+      "createdAt": "2026-10-23T20:10:53.445Z",
+      "updatedAt": "2026-10-23T20:10:53.445Z"
+    },
+    {
+      "ownerId": "default-owner",
+      "personId": "person-1bb48900727e4cc5",
+      "type": "GIVE_MONEY",
+      "amountPaise": 1000000,
+      "transactionDate": "2026-10-22",
+      "description": "Private loan transaction",
+      "category": "Private",
+      "isShared": false,
+      "id": "tx-1ac152239df21215",
+      "balanceEffectPaise": 1000000,
+      "createdAt": "2026-10-23T20:10:53.447Z",
+      "updatedAt": "2026-10-23T20:10:53.447Z"
     }
   ]
 }

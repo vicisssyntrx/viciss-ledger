@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import {
   TrendingUp,
   TrendingDown,
@@ -29,6 +30,7 @@ import { DashboardSummary, PersonSummary, Transaction, Person } from '@/lib/acco
 import { formatINR } from '@/lib/accounting/currency';
 
 export default function DashboardPage() {
+  const router = useRouter();
   const [summary, setSummary] = useState<DashboardSummary | null>(null);
   const [peopleSummaries, setPeopleSummaries] = useState<PersonSummary[]>([]);
   const [rawPeople, setRawPeople] = useState<Person[]>([]);
@@ -257,19 +259,17 @@ export default function DashboardPage() {
                   return (
                     <div
                       key={person.personId}
-                      className="group p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 transition-all shadow-2xs hover:shadow-sm flex flex-col justify-between"
+                      onClick={() => router.push(`/people/${person.personId}`)}
+                      className="group p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 hover:border-amber-700/40 dark:hover:border-amber-700/50 transition-all shadow-2xs hover:shadow-md flex flex-col justify-between cursor-pointer"
                     >
                       <div>
                         <div className="flex items-start justify-between gap-2 mb-3">
-                          <Link
-                            href={`/people/${person.personId}`}
-                            className="flex items-center gap-3 hover:opacity-80 transition-opacity"
-                          >
+                          <div className="flex items-center gap-3">
                             <div className="w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-bold flex items-center justify-center text-sm border border-slate-200 dark:border-slate-700">
                               {person.personName.substring(0, 2).toUpperCase()}
                             </div>
                             <div>
-                              <h3 className="text-sm font-semibold text-slate-900 dark:text-white group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">
+                              <h3 className="text-sm font-semibold text-slate-900 dark:text-white group-hover:text-amber-500 dark:group-hover:text-amber-400 transition-colors">
                                 {person.personName}
                               </h3>
                               {person.nickname && (
@@ -278,11 +278,14 @@ export default function DashboardPage() {
                                 </span>
                               )}
                             </div>
-                          </Link>
+                          </div>
 
                           {rawP && (
                             <button
-                              onClick={() => setSharePerson(rawP)}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setSharePerson(rawP);
+                              }}
                               title={rawP.isSharingEnabled ? 'Sharing Active' : 'Enable Public Sharing'}
                               className={`p-1.5 rounded-lg border transition-colors cursor-pointer ${
                                 rawP.isSharingEnabled
@@ -334,13 +337,10 @@ export default function DashboardPage() {
                         <span className="text-slate-400 text-[11px]">
                           {person.transactionCount} transactions
                         </span>
-                        <Link
-                          href={`/people/${person.personId}`}
-                          className="flex items-center gap-1 font-medium text-slate-700 dark:text-slate-300 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors"
-                        >
+                        <div className="flex items-center gap-1 font-medium text-slate-700 dark:text-slate-300 group-hover:text-amber-500 dark:group-hover:text-amber-400 transition-colors">
                           <span>Open Ledger</span>
-                          <ChevronRight className="w-3.5 h-3.5" />
-                        </Link>
+                          <ChevronRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
+                        </div>
                       </div>
                     </div>
                   );
