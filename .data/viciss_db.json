@@ -14,7 +14,8 @@
       "isSharingEnabled": true,
       "sharePolicy": "ALL",
       "createdAt": "2026-10-08T12:26:31.045Z",
-      "updatedAt": "2026-10-21T12:26:31.045Z"
+      "updatedAt": "2026-10-21T12:26:31.045Z",
+      "color": "emerald"
     },
     {
       "id": "person-priya-002",
@@ -29,7 +30,8 @@
       "isSharingEnabled": true,
       "sharePolicy": "ALL",
       "createdAt": "2026-10-03T12:26:31.045Z",
-      "updatedAt": "2026-10-22T12:26:31.045Z"
+      "updatedAt": "2026-10-22T12:26:31.045Z",
+      "color": "purple"
     },
     {
       "id": "person-arjun-003",
@@ -43,7 +45,8 @@
       "isSharingEnabled": false,
       "sharePolicy": "ALL",
       "createdAt": "2026-09-23T12:26:31.045Z",
-      "updatedAt": "2026-10-18T12:26:31.045Z"
+      "updatedAt": "2026-10-18T12:26:31.045Z",
+      "color": "rose"
     },
     {
       "id": "person-d65628d04623388b",
@@ -57,7 +60,8 @@
       "isSharingEnabled": false,
       "sharePolicy": "ALL",
       "createdAt": "2026-10-23T12:26:31.053Z",
-      "updatedAt": "2026-10-23T12:26:31.053Z"
+      "updatedAt": "2026-10-23T12:26:31.053Z",
+      "color": "blue"
     },
     {
       "id": "person-c28e05c2b30bc8d7",
@@ -68,7 +72,8 @@
       "isSharingEnabled": false,
       "sharePolicy": "ALL",
       "createdAt": "2026-10-23T12:26:31.104Z",
-      "updatedAt": "2026-10-23T12:26:31.104Z"
+      "updatedAt": "2026-10-23T12:26:31.104Z",
+      "color": "cyan"
     },
     {
       "id": "person-0c363f6e548bc119",
@@ -82,7 +87,8 @@
       "isSharingEnabled": true,
       "sharePolicy": "ALL",
       "createdAt": "2026-10-23T12:26:31.153Z",
-      "updatedAt": "2026-10-23T12:26:31.202Z"
+      "updatedAt": "2026-10-23T12:26:31.202Z",
+      "color": "amber"
     },
     {
       "id": "person-fa0a7e587f584ccb",
@@ -96,7 +102,8 @@
       "isSharingEnabled": false,
       "sharePolicy": "ALL",
       "createdAt": "2026-10-23T12:45:22.649Z",
-      "updatedAt": "2026-10-23T12:45:22.649Z"
+      "updatedAt": "2026-10-23T12:45:22.649Z",
+      "color": "orange"
     },
     {
       "id": "person-bf991d702c917074",
@@ -107,7 +114,8 @@
       "isSharingEnabled": false,
       "sharePolicy": "ALL",
       "createdAt": "2026-10-23T12:45:22.879Z",
-      "updatedAt": "2026-10-23T12:45:22.879Z"
+      "updatedAt": "2026-10-23T12:45:22.879Z",
+      "color": "emerald"
     },
     {
       "id": "person-0bb9ed268518176b",
@@ -121,7 +129,8 @@
       "isSharingEnabled": true,
       "sharePolicy": "ALL",
       "createdAt": "2026-10-23T12:45:22.905Z",
-      "updatedAt": "2026-10-23T12:45:22.931Z"
+      "updatedAt": "2026-10-23T12:45:22.931Z",
+      "color": "purple"
     },
     {
       "id": "person-9fa1f1f7f18b63a0",
@@ -135,7 +144,8 @@
       "isSharingEnabled": false,
       "sharePolicy": "ALL",
       "createdAt": "2026-10-23T12:53:11.725Z",
-      "updatedAt": "2026-10-23T12:53:11.725Z"
+      "updatedAt": "2026-10-23T12:53:11.725Z",
+      "color": "rose"
     },
     {
       "id": "person-34348986004b22ab",
@@ -146,7 +156,8 @@
       "isSharingEnabled": false,
       "sharePolicy": "ALL",
       "createdAt": "2026-10-23T12:53:11.750Z",
-      "updatedAt": "2026-10-23T12:53:11.750Z"
+      "updatedAt": "2026-10-23T12:53:11.750Z",
+      "color": "blue"
     },
     {
       "id": "person-ab15d29b9aad6682",
@@ -160,7 +171,8 @@
       "isSharingEnabled": true,
       "sharePolicy": "ALL",
       "createdAt": "2026-10-23T12:53:11.755Z",
-      "updatedAt": "2026-10-23T12:53:11.759Z"
+      "updatedAt": "2026-10-23T12:53:11.759Z",
+      "color": "cyan"
     },
     {
       "id": "person-0115d3bace0e586c",
@@ -174,7 +186,8 @@
       "isSharingEnabled": false,
       "sharePolicy": "ALL",
       "createdAt": "2026-10-23T18:10:06.221Z",
-      "updatedAt": "2026-10-23T18:10:06.221Z"
+      "updatedAt": "2026-10-23T18:10:06.221Z",
+      "color": "amber"
     },
     {
       "id": "person-9ab1a877c9656ad1",
@@ -185,7 +198,8 @@
       "isSharingEnabled": false,
       "sharePolicy": "ALL",
       "createdAt": "2026-10-23T18:10:06.231Z",
-      "updatedAt": "2026-10-23T18:10:06.231Z"
+      "updatedAt": "2026-10-23T18:10:06.231Z",
+      "color": "orange"
     },
     {
       "id": "person-e335104ee2e4cea1",
@@ -199,7 +213,8 @@
       "isSharingEnabled": true,
       "sharePolicy": "ALL",
       "createdAt": "2026-10-23T18:10:06.235Z",
-      "updatedAt": "2026-10-23T18:10:06.238Z"
+      "updatedAt": "2026-10-23T18:10:06.238Z",
+      "color": "emerald"
     },
     {
       "id": "person-e52aaa0e9eb2a58f",
@@ -213,7 +228,8 @@
       "isSharingEnabled": false,
       "sharePolicy": "ALL",
       "createdAt": "2026-10-23T18:15:03.944Z",
-      "updatedAt": "2026-10-23T18:15:03.944Z"
+      "updatedAt": "2026-10-23T18:15:03.944Z",
+      "color": "purple"
     },
     {
       "id": "person-89f24299d586a7f3",
@@ -224,7 +240,8 @@
       "isSharingEnabled": false,
       "sharePolicy": "ALL",
       "createdAt": "2026-10-23T18:15:03.966Z",
-      "updatedAt": "2026-10-23T18:15:03.966Z"
+      "updatedAt": "2026-10-23T18:15:03.966Z",
+      "color": "rose"
     },
     {
       "id": "person-f7092ee3e2bffc0e",
@@ -238,7 +255,8 @@
       "isSharingEnabled": true,
       "sharePolicy": "ALL",
       "createdAt": "2026-10-23T18:15:03.970Z",
-      "updatedAt": "2026-10-23T18:15:03.974Z"
+      "updatedAt": "2026-10-23T18:15:03.974Z",
+      "color": "blue"
     },
     {
       "id": "person-c5b86bdb90c00f61",
@@ -252,7 +270,8 @@
       "isSharingEnabled": false,
       "sharePolicy": "ALL",
       "createdAt": "2026-10-23T20:10:53.401Z",
-      "updatedAt": "2026-10-23T20:10:53.401Z"
+      "updatedAt": "2026-10-23T20:10:53.401Z",
+      "color": "cyan"
     },
     {
       "id": "person-ff6c764eb226b2d4",
@@ -263,7 +282,8 @@
       "isSharingEnabled": false,
       "sharePolicy": "ALL",
       "createdAt": "2026-10-23T20:10:53.436Z",
-      "updatedAt": "2026-10-23T20:10:53.436Z"
+      "updatedAt": "2026-10-23T20:10:53.436Z",
+      "color": "amber"
     },
     {
       "id": "person-1bb48900727e4cc5",
@@ -277,7 +297,8 @@
       "isSharingEnabled": true,
       "sharePolicy": "ALL",
       "createdAt": "2026-10-23T20:10:53.442Z",
-      "updatedAt": "2026-10-23T20:10:53.449Z"
+      "updatedAt": "2026-10-23T20:10:53.449Z",
+      "color": "orange"
     },
     {
       "id": "person-b818ebfd5e12405c",
@@ -291,7 +312,8 @@
       "isSharingEnabled": false,
       "sharePolicy": "ALL",
       "createdAt": "2026-10-23T20:19:59.206Z",
-      "updatedAt": "2026-10-23T20:19:59.206Z"
+      "updatedAt": "2026-10-23T20:19:59.206Z",
+      "color": "emerald"
     },
     {
       "id": "person-9b2ab3c96a0d084d",
@@ -302,7 +324,8 @@
       "isSharingEnabled": false,
       "sharePolicy": "ALL",
       "createdAt": "2026-10-23T20:19:59.248Z",
-      "updatedAt": "2026-10-23T20:19:59.248Z"
+      "updatedAt": "2026-10-23T20:19:59.248Z",
+      "color": "purple"
     },
     {
       "id": "person-91ee8243b746eb8c",
@@ -316,7 +339,50 @@
       "isSharingEnabled": true,
       "sharePolicy": "ALL",
       "createdAt": "2026-10-23T20:19:59.257Z",
-      "updatedAt": "2026-10-23T20:19:59.265Z"
+      "updatedAt": "2026-10-23T20:19:59.265Z",
+      "color": "rose"
+    },
+    {
+      "id": "person-aa2acccabbe03a22",
+      "ownerId": "default-owner",
+      "name": "Dev Test User",
+      "nickname": "Dev",
+      "phone": "+91 99999 88888",
+      "notes": "Private developer test note",
+      "isArchived": false,
+      "shareToken": "vcs_a9e9f9cfe012e4d7dbef48589b3c84f3f1a31d9fab5f392a",
+      "isSharingEnabled": false,
+      "sharePolicy": "ALL",
+      "createdAt": "2026-10-23T20:29:40.315Z",
+      "updatedAt": "2026-10-23T20:29:40.315Z",
+      "color": "blue"
+    },
+    {
+      "id": "person-4699daa6a784a00b",
+      "ownerId": "default-owner",
+      "name": "Finance Test Person",
+      "isArchived": false,
+      "shareToken": "vcs_669f0fc031cc681ad3ab8d0196c31cd2a7f193c26a60daa4",
+      "isSharingEnabled": false,
+      "sharePolicy": "ALL",
+      "createdAt": "2026-10-23T20:29:40.349Z",
+      "updatedAt": "2026-10-23T20:29:40.349Z",
+      "color": "cyan"
+    },
+    {
+      "id": "person-76b1d951ba628695",
+      "ownerId": "default-owner",
+      "name": "Public Test Person",
+      "phone": "+91 99999 00000",
+      "email": "private@test.com",
+      "notes": "Super secret personal notes",
+      "isArchived": false,
+      "shareToken": "vcs_8ea87a2adfc19228195734b408e4fc958550adecb05df2c3",
+      "isSharingEnabled": true,
+      "sharePolicy": "ALL",
+      "createdAt": "2026-10-23T20:29:40.355Z",
+      "updatedAt": "2026-10-23T20:29:40.363Z",
+      "color": "amber"
     }
   ],
   "transactions": [
@@ -786,6 +852,63 @@
       "balanceEffectPaise": 1000000,
       "createdAt": "2026-10-23T20:19:59.262Z",
       "updatedAt": "2026-10-23T20:19:59.262Z"
+    },
+    {
+      "ownerId": "default-owner",
+      "personId": "person-4699daa6a784a00b",
+      "type": "GIVE_MONEY",
+      "amountPaise": 400000,
+      "transactionDate": "2026-10-20",
+      "description": "Lent money",
+      "category": "Loan",
+      "isShared": true,
+      "id": "tx-74d0d8cf200f48dd",
+      "balanceEffectPaise": 400000,
+      "createdAt": "2026-10-23T20:29:40.351Z",
+      "updatedAt": "2026-10-23T20:29:40.351Z"
+    },
+    {
+      "ownerId": "default-owner",
+      "personId": "person-4699daa6a784a00b",
+      "type": "REPAYMENT",
+      "repaymentDirection": "THEY_REPAY_ME",
+      "amountPaise": 150000,
+      "transactionDate": "2026-10-21",
+      "description": "Part payment",
+      "category": "Repayment",
+      "isShared": true,
+      "id": "tx-bdd8c84b0eb50d4a",
+      "balanceEffectPaise": -150000,
+      "createdAt": "2026-10-23T20:29:40.352Z",
+      "updatedAt": "2026-10-23T20:29:40.352Z"
+    },
+    {
+      "ownerId": "default-owner",
+      "personId": "person-76b1d951ba628695",
+      "type": "GIVE_MONEY",
+      "amountPaise": 250000,
+      "transactionDate": "2026-10-22",
+      "description": "Public dinner share",
+      "category": "Food",
+      "isShared": true,
+      "id": "tx-ee1149d050bbcf5b",
+      "balanceEffectPaise": 250000,
+      "createdAt": "2026-10-23T20:29:40.359Z",
+      "updatedAt": "2026-10-23T20:29:40.359Z"
+    },
+    {
+      "ownerId": "default-owner",
+      "personId": "person-76b1d951ba628695",
+      "type": "GIVE_MONEY",
+      "amountPaise": 1000000,
+      "transactionDate": "2026-10-22",
+      "description": "Private loan transaction",
+      "category": "Private",
+      "isShared": false,
+      "id": "tx-1cbb026ba9c67787",
+      "balanceEffectPaise": 1000000,
+      "createdAt": "2026-10-23T20:29:40.360Z",
+      "updatedAt": "2026-10-23T20:29:40.360Z"
     }
   ]
 }

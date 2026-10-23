@@ -1,8 +1,9 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { X, User, Phone, Mail, FileText, ShieldAlert } from 'lucide-react';
+import { X, User, Phone, Mail, FileText, ShieldAlert, Check, Palette } from 'lucide-react';
 import { Person } from '@/lib/accounting/types';
+import { PERSON_COLORS } from '@/lib/accounting/personColors';
 
 interface PersonModalProps {
   isOpen: boolean;
@@ -19,6 +20,7 @@ export function PersonModal({
 }: PersonModalProps) {
   const [name, setName] = useState('');
   const [nickname, setNickname] = useState('');
+  const [color, setColor] = useState('amber');
   const [phone, setPhone] = useState('');
   const [email, setEmail] = useState('');
   const [notes, setNotes] = useState('');
@@ -29,12 +31,14 @@ export function PersonModal({
     if (personToEdit) {
       setName(personToEdit.name);
       setNickname(personToEdit.nickname || '');
+      setColor(personToEdit.color || 'amber');
       setPhone(personToEdit.phone || '');
       setEmail(personToEdit.email || '');
       setNotes(personToEdit.notes || '');
     } else {
       setName('');
       setNickname('');
+      setColor('amber');
       setPhone('');
       setEmail('');
       setNotes('');
@@ -58,6 +62,7 @@ export function PersonModal({
       const payload = {
         name: name.trim(),
         nickname: nickname.trim() || undefined,
+        color: color || 'amber',
         phone: phone.trim() || undefined,
         email: email.trim() || undefined,
         notes: notes.trim() || undefined,
@@ -138,6 +143,40 @@ export function PersonModal({
               placeholder="e.g. Rahul"
               className="w-full px-3.5 py-2 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
             />
+          </div>
+
+          {/* Card Organization Color */}
+          <div>
+            <div className="flex items-center justify-between mb-1.5">
+              <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-300 flex items-center gap-1.5">
+                <Palette className="w-3.5 h-3.5 text-amber-500" />
+                <span>Card Organization Color</span>
+              </label>
+              <span className="text-[11px] font-medium text-slate-400">
+                {PERSON_COLORS.find((c) => c.id === color)?.label || 'Amber Gold'}
+              </span>
+            </div>
+            <div className="grid grid-cols-4 sm:grid-cols-8 gap-2 pt-1">
+              {PERSON_COLORS.map((c) => {
+                const isSelected = color === c.id;
+                return (
+                  <button
+                    key={c.id}
+                    type="button"
+                    onClick={() => setColor(c.id)}
+                    title={c.label}
+                    className={`h-9 rounded-xl flex items-center justify-center transition-all cursor-pointer relative ${
+                      isSelected
+                        ? 'ring-2 ring-white scale-105 shadow-md shadow-black/40'
+                        : 'opacity-70 hover:opacity-100 hover:scale-105'
+                    }`}
+                    style={{ backgroundColor: c.hex }}
+                  >
+                    {isSelected && <Check className="w-4 h-4 text-white drop-shadow" />}
+                  </button>
+                );
+              })}
+            </div>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">

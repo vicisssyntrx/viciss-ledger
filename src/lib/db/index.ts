@@ -26,6 +26,7 @@ function mapPersonFromDb(row: any): Person {
     ownerId: row.owner_id || 'default-owner',
     name: row.name,
     nickname: row.nickname || undefined,
+    color: row.color || undefined,
     phone: row.phone || undefined,
     email: row.email || undefined,
     notes: row.notes || undefined,
@@ -105,6 +106,7 @@ export async function getPersonById(id: string): Promise<Person | null> {
 export async function createPerson(data: {
   name: string;
   nickname?: string;
+  color?: string;
   phone?: string;
   email?: string;
   notes?: string;
@@ -116,6 +118,7 @@ export async function createPerson(data: {
     const payload = {
       name: data.name.trim(),
       nickname: data.nickname?.trim() || null,
+      color: data.color?.trim() || null,
       phone: data.phone?.trim() || null,
       email: data.email?.trim() || null,
       notes: data.notes?.trim() || null,
@@ -139,6 +142,7 @@ export async function createPerson(data: {
     ownerId: 'default-owner',
     name: data.name.trim(),
     nickname: data.nickname?.trim(),
+    color: data.color?.trim(),
     phone: data.phone?.trim(),
     email: data.email?.trim(),
     notes: data.notes?.trim(),
@@ -164,6 +168,7 @@ export async function updatePerson(
     const dbUpdates: any = { updated_at: new Date().toISOString() };
     if (updates.name !== undefined) dbUpdates.name = updates.name;
     if (updates.nickname !== undefined) dbUpdates.nickname = updates.nickname;
+    if (updates.color !== undefined) dbUpdates.color = updates.color;
     if (updates.phone !== undefined) dbUpdates.phone = updates.phone;
     if (updates.email !== undefined) dbUpdates.email = updates.email;
     if (updates.notes !== undefined) dbUpdates.notes = updates.notes;

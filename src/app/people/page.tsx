@@ -24,6 +24,7 @@ import { DeleteConfirmModal } from '@/components/DeleteConfirmModal';
 import { TransactionModal } from '@/components/TransactionModal';
 import { Person, PersonSummary } from '@/lib/accounting/types';
 import { formatINR } from '@/lib/accounting/currency';
+import { getPersonColorConfig } from '@/lib/accounting/personColors';
 
 export default function PeoplePage() {
   const router = useRouter();
@@ -200,29 +201,36 @@ export default function PeoplePage() {
               const raw = rawPeople.find((rp) => rp.id === person.personId);
               const isPositive = person.currentBalancePaise > 0;
               const isNegative = person.currentBalancePaise < 0;
+              const colorCfg = getPersonColorConfig(person.color || raw?.color);
 
               return (
                 <div
                   key={person.personId}
                   onClick={() => router.push(`/people/${person.personId}`)}
-                  className="group p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-2xs hover:shadow-md hover:border-amber-700/40 dark:hover:border-amber-700/50 transition-all flex flex-col justify-between cursor-pointer"
+                  className={`group p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-2xs hover:shadow-md hover:border-amber-700/40 dark:hover:border-amber-700/50 transition-all flex flex-col justify-between cursor-pointer ${colorCfg.borderClass}`}
                 >
                   <div>
                     {/* Header: Avatar, Name, and Sharing Badge */}
                     <div className="flex items-start justify-between gap-3 mb-3">
                       <div className="flex items-center gap-3">
-                        <div className="w-12 h-12 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 font-bold flex items-center justify-center text-base border border-slate-200 dark:border-slate-700">
+                        <div className={`w-12 h-12 rounded-xl ${colorCfg.avatarBgClass} font-bold flex items-center justify-center text-base border shadow-2xs shrink-0 transition-transform group-hover:scale-105`}>
                           {person.personName.substring(0, 2).toUpperCase()}
                         </div>
                         <div>
-                          <h3 className="text-base font-bold text-slate-900 dark:text-white group-hover:text-amber-500 dark:group-hover:text-amber-400 transition-colors">
+                          <h3 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white group-hover:text-amber-500 dark:group-hover:text-amber-400 transition-colors leading-tight">
                             {person.personName}
                           </h3>
-                          {person.nickname && (
-                            <span className="text-xs text-slate-500 dark:text-slate-400">
-                              @{person.nickname}
+                          <div className="flex items-center gap-2 mt-0.5">
+                            {person.nickname && (
+                              <span className="text-xs text-slate-400 font-medium">
+                                @{person.nickname}
+                              </span>
+                            )}
+                            <span className="inline-flex items-center gap-1 text-[10px] font-medium px-1.5 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-400 border border-slate-200/60 dark:border-slate-700/60">
+                              <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: colorCfg.hex }} />
+                              {colorCfg.label}
                             </span>
-                          )}
+                          </div>
                         </div>
                       </div>
 

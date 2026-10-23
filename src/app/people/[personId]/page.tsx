@@ -28,6 +28,7 @@ import { ShareModal } from '@/components/ShareModal';
 import { DeleteConfirmModal } from '@/components/DeleteConfirmModal';
 import { Person, PersonSummary, TransactionWithRunningBalance, Transaction } from '@/lib/accounting/types';
 import { formatINR } from '@/lib/accounting/currency';
+import { getPersonColorConfig } from '@/lib/accounting/personColors';
 
 function IndividualLedgerContent() {
   const params = useParams();
@@ -169,23 +170,30 @@ function IndividualLedgerContent() {
         </div>
 
         {/* Person Header Card */}
-        <div className="p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-2xs mb-6">
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-            <div className="flex items-center gap-4">
-              <div className="w-16 h-16 rounded-2xl bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 font-extrabold flex items-center justify-center text-xl border border-slate-200 dark:border-slate-700 shadow-2xs">
-                {person.name.substring(0, 2).toUpperCase()}
-              </div>
-              <div>
-                <div className="flex items-center gap-2">
-                  <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
-                    {person.name}
-                  </h1>
-                  {person.nickname && (
-                    <span className="text-sm font-medium text-slate-400">
-                      (@{person.nickname})
-                    </span>
-                  )}
-                </div>
+        {(() => {
+          const colorCfg = getPersonColorConfig(person.color);
+          return (
+            <div className={`p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-2xs mb-6 ${colorCfg.borderClass}`}>
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+                <div className="flex items-center gap-4">
+                  <div className={`w-16 h-16 rounded-2xl ${colorCfg.avatarBgClass} font-extrabold flex items-center justify-center text-xl border shadow-2xs shrink-0`}>
+                    {person.name.substring(0, 2).toUpperCase()}
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
+                        {person.name}
+                      </h1>
+                      {person.nickname && (
+                        <span className="text-sm font-medium text-slate-400">
+                          (@{person.nickname})
+                        </span>
+                      )}
+                      <span className="inline-flex items-center gap-1 text-[11px] font-medium px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-400 border border-slate-200/60 dark:border-slate-700/60">
+                        <span className="w-2 h-2 rounded-full" style={{ backgroundColor: colorCfg.hex }} />
+                        {colorCfg.label}
+                      </span>
+                    </div>
                 <div className="flex flex-wrap items-center gap-3 text-xs text-slate-500 dark:text-slate-400 mt-1">
                   {person.phone && <span>{person.phone}</span>}
                   {person.email && (
@@ -294,6 +302,8 @@ function IndividualLedgerContent() {
             </button>
           </div>
         </div>
+          );
+        })()}
 
         {/* Financial Summary Metrics Grid */}
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 mb-8">

@@ -28,6 +28,7 @@ import { PersonModal } from '@/components/PersonModal';
 import { ShareModal } from '@/components/ShareModal';
 import { DashboardSummary, PersonSummary, Transaction, Person } from '@/lib/accounting/types';
 import { formatINR } from '@/lib/accounting/currency';
+import { getPersonColorConfig } from '@/lib/accounting/personColors';
 
 export default function DashboardPage() {
   const router = useRouter();
@@ -255,28 +256,35 @@ export default function DashboardPage() {
                   const isPositive = person.currentBalancePaise > 0;
                   const isNegative = person.currentBalancePaise < 0;
                   const isSettled = person.currentBalancePaise === 0;
+                  const colorCfg = getPersonColorConfig(person.color || rawP?.color);
 
                   return (
                     <div
                       key={person.personId}
                       onClick={() => router.push(`/people/${person.personId}`)}
-                      className="group p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 hover:border-amber-700/40 dark:hover:border-amber-700/50 transition-all shadow-2xs hover:shadow-md flex flex-col justify-between cursor-pointer"
+                      className={`group p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 hover:border-amber-700/40 dark:hover:border-amber-700/50 transition-all shadow-2xs hover:shadow-md flex flex-col justify-between cursor-pointer ${colorCfg.borderClass}`}
                     >
                       <div>
                         <div className="flex items-start justify-between gap-2 mb-3">
                           <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-bold flex items-center justify-center text-sm border border-slate-200 dark:border-slate-700">
+                            <div className={`w-11 h-11 rounded-xl ${colorCfg.avatarBgClass} font-bold flex items-center justify-center text-sm border shadow-2xs shrink-0 transition-transform group-hover:scale-105`}>
                               {person.personName.substring(0, 2).toUpperCase()}
                             </div>
                             <div>
-                              <h3 className="text-sm font-semibold text-slate-900 dark:text-white group-hover:text-amber-500 dark:group-hover:text-amber-400 transition-colors">
+                              <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white group-hover:text-amber-500 dark:group-hover:text-amber-400 transition-colors leading-tight">
                                 {person.personName}
                               </h3>
-                              {person.nickname && (
-                                <span className="text-xs text-slate-400">
-                                  @{person.nickname}
+                              <div className="flex items-center gap-2 mt-0.5">
+                                {person.nickname && (
+                                  <span className="text-xs text-slate-400 font-medium">
+                                    @{person.nickname}
+                                  </span>
+                                )}
+                                <span className="inline-flex items-center gap-1 text-[10px] font-medium px-1.5 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-400 border border-slate-200/60 dark:border-slate-700/60">
+                                  <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: colorCfg.hex }} />
+                                  {colorCfg.label}
                                 </span>
-                              )}
+                              </div>
                             </div>
                           </div>
 

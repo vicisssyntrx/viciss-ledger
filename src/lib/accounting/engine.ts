@@ -346,6 +346,7 @@ export function summarizePerson(
     personId: person.id,
     personName: person.name,
     nickname: person.nickname,
+    color: person.color,
     currentBalancePaise,
     status,
     statusLabel: label,

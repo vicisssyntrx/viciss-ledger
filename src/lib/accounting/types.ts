@@ -49,6 +49,7 @@ export interface Person {
   ownerId: string;
   name: string;
   nickname?: string;
+  color?: string;
   phone?: string;
   email?: string;
   notes?: string;
@@ -91,6 +92,7 @@ export interface PersonSummary {
   personId: string;
   personName: string;
   nickname?: string;
+  color?: string;
   currentBalancePaise: number;
   status: BalanceStatus;
   statusLabel: string;

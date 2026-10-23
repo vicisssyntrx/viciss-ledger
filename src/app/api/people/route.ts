@@ -31,6 +31,7 @@ export async function POST(req: NextRequest) {
     const created = await createPerson({
       name: body.name,
       nickname: body.nickname,
+      color: body.color,
       phone: body.phone,
       email: body.email,
       notes: body.notes,
