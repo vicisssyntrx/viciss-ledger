@@ -81,10 +81,10 @@ export default function SettingsPage() {
   };
 
   return (
-    <div className="flex min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 font-sans">
+    <div className="flex flex-col md:flex-row min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 font-sans w-full max-w-full overflow-x-hidden">
       <Navigation />
 
-      <main className="flex-1 pb-24 md:pb-12 pt-6 px-4 sm:px-6 md:px-8 max-w-4xl mx-auto w-full space-y-8">
+      <main className="flex-1 min-w-0 w-full pb-28 md:pb-12 pt-4 sm:pt-6 px-3.5 sm:px-6 md:px-8 max-w-4xl mx-auto space-y-6 sm:space-y-8">
         {/* Header */}
         <div>
           <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900 dark:text-white">
@@ -164,14 +164,14 @@ export default function SettingsPage() {
             <button
               onClick={handleDownloadBackup}
               disabled={isExporting}
-              className="flex items-center gap-2 px-4 py-2.5 text-xs font-semibold text-white bg-slate-900 hover:bg-slate-800 dark:bg-emerald-600 dark:hover:bg-emerald-500 rounded-lg transition-colors shadow-2xs cursor-pointer disabled:opacity-50"
+              className="btn-premium-brown px-4 py-2.5 text-xs rounded-xl"
             >
-              <Download className="w-4 h-4" />
+              <Download className="w-4 h-4 text-amber-300" />
               <span>{isExporting ? 'Generating...' : 'Download JSON Backup'}</span>
             </button>
 
-            <label className="flex items-center gap-2 px-4 py-2.5 text-xs font-semibold text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors shadow-2xs cursor-pointer">
-              <Upload className="w-4 h-4 text-indigo-600" />
+            <label className="btn-premium-brown-outline px-4 py-2.5 text-xs rounded-xl">
+              <Upload className="w-4 h-4 text-amber-500" />
               <span>{isImporting ? 'Restoring...' : 'Restore from JSON File'}</span>
               <input
                 type="file"

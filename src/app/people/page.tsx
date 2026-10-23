@@ -105,7 +105,7 @@ export default function PeoplePage() {
   });
 
   return (
-    <div className="flex min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 font-sans">
+    <div className="flex flex-col md:flex-row min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 font-sans w-full max-w-full overflow-x-hidden">
       <Navigation
         onOpenAddTransaction={() => {
           setSelectedPersonForTx(undefined);
@@ -114,14 +114,14 @@ export default function PeoplePage() {
         onOpenAddPerson={() => setIsAddPersonOpen(true)}
       />
 
-      <main className="flex-1 pb-24 md:pb-12 pt-6 px-4 sm:px-6 md:px-8 max-w-7xl mx-auto w-full">
+      <main className="flex-1 min-w-0 w-full pb-28 md:pb-12 pt-4 sm:pt-6 px-3.5 sm:px-6 md:px-8 max-w-7xl mx-auto">
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
           <div>
-            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900 dark:text-white">
+            <h1 className="text-xl sm:text-2xl md:text-3xl font-bold tracking-tight text-slate-900 dark:text-white">
               People Directory
             </h1>
-            <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
+            <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-0.5 sm:mt-1">
               Manage individual ledgers, sharing preferences, and personal balances.
             </p>
           </div>
@@ -131,9 +131,9 @@ export default function PeoplePage() {
               setPersonToEdit(null);
               setIsAddPersonOpen(true);
             }}
-            className="inline-flex items-center gap-2 px-4 py-2.5 text-sm font-semibold text-white bg-slate-900 hover:bg-slate-800 dark:bg-emerald-600 dark:hover:bg-emerald-500 rounded-lg transition-colors shadow-sm cursor-pointer"
+            className="btn-premium-brown px-4 py-2.5 text-xs sm:text-sm rounded-xl w-full sm:w-auto"
           >
-            <UserPlus className="w-4 h-4" />
+            <UserPlus className="w-4 h-4 text-amber-300" />
             <span>Add New Person</span>
           </button>
         </div>

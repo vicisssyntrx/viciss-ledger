@@ -189,47 +189,35 @@ function PublicSharedLedgerContent() {
                 No shared transactions recorded.
               </div>
             ) : (
-              <div className="overflow-x-auto rounded-xl border border-slate-200 dark:border-slate-800">
-                <table className="w-full text-left border-collapse text-xs">
-                  <thead>
-                    <tr className="border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-slate-500 dark:text-slate-400 font-semibold uppercase tracking-wider text-[10px]">
-                      <th className="py-2.5 px-3.5">Date</th>
-                      <th className="py-2.5 px-3.5">Type</th>
-                      <th className="py-2.5 px-3.5">Description</th>
-                      <th className="py-2.5 px-3.5">Category</th>
-                      <th className="py-2.5 px-3.5 text-right">Amount</th>
-                      <th className="py-2.5 px-3.5 text-right">Balance Effect</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-slate-100 dark:divide-slate-800/80">
-                    {data.transactions.map((tx) => {
-                      const isPositive = tx.balanceEffectPaise > 0;
-                      const isNegative = tx.balanceEffectPaise < 0;
+              <>
+                {/* Mobile Cards View (< sm) */}
+                <div className="block sm:hidden divide-y divide-slate-100 dark:divide-slate-800 rounded-xl border border-slate-200 dark:border-slate-800 overflow-hidden">
+                  {data.transactions.map((tx) => {
+                    const isPositive = tx.balanceEffectPaise > 0;
+                    const isNegative = tx.balanceEffectPaise < 0;
 
-                      return (
-                        <tr
-                          key={tx.id}
-                          className="hover:bg-slate-50/60 dark:hover:bg-slate-800/30 transition-colors"
-                        >
-                          <td className="py-2.5 px-3.5 font-mono text-slate-500 whitespace-nowrap">
-                            {tx.transactionDate}
-                          </td>
-                          <td className="py-2.5 px-3.5 whitespace-nowrap">
+                    return (
+                      <div key={tx.id} className="p-3.5 space-y-2">
+                        <div className="flex items-center justify-between text-xs">
+                          <div className="flex items-center gap-1.5">
+                            <span className="font-mono text-[11px] text-slate-500">
+                              {tx.transactionDate}
+                            </span>
                             <span className="text-[10px] font-medium px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">
                               {tx.type.replace('_', ' ')}
                             </span>
-                          </td>
-                          <td className="py-2.5 px-3.5 font-medium text-slate-900 dark:text-white">
-                            {tx.description}
-                          </td>
-                          <td className="py-2.5 px-3.5 text-slate-500 whitespace-nowrap">
-                            {tx.category}
-                          </td>
-                          <td className="py-2.5 px-3.5 text-right font-bold text-slate-900 dark:text-white whitespace-nowrap">
+                          </div>
+                          <span className="font-bold text-slate-900 dark:text-white">
                             {formatINR(tx.amountPaise)}
-                          </td>
-                          <td
-                            className={`py-2.5 px-3.5 text-right font-semibold whitespace-nowrap ${
+                          </span>
+                        </div>
+
+                        <div className="flex items-baseline justify-between text-xs">
+                          <p className="font-medium text-slate-900 dark:text-white">
+                            {tx.description}
+                          </p>
+                          <span
+                            className={`font-semibold text-xs ${
                               isPositive
                                 ? 'text-emerald-600 dark:text-emerald-400'
                                 : isNegative
@@ -238,13 +226,75 @@ function PublicSharedLedgerContent() {
                             }`}
                           >
                             {formatINR(tx.balanceEffectPaise, { showSign: true })}
-                          </td>
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </table>
-              </div>
+                          </span>
+                        </div>
+
+                        <div className="text-[10px] text-slate-400">
+                          Category: {tx.category}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+
+                {/* Desktop Table View (>= sm) */}
+                <div className="hidden sm:block overflow-x-auto rounded-xl border border-slate-200 dark:border-slate-800">
+                  <table className="w-full text-left border-collapse text-xs">
+                    <thead>
+                      <tr className="border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-slate-500 dark:text-slate-400 font-semibold uppercase tracking-wider text-[10px]">
+                        <th className="py-2.5 px-3.5">Date</th>
+                        <th className="py-2.5 px-3.5">Type</th>
+                        <th className="py-2.5 px-3.5">Description</th>
+                        <th className="py-2.5 px-3.5">Category</th>
+                        <th className="py-2.5 px-3.5 text-right">Amount</th>
+                        <th className="py-2.5 px-3.5 text-right">Balance Effect</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-100 dark:divide-slate-800/80">
+                      {data.transactions.map((tx) => {
+                        const isPositive = tx.balanceEffectPaise > 0;
+                        const isNegative = tx.balanceEffectPaise < 0;
+
+                        return (
+                          <tr
+                            key={tx.id}
+                            className="hover:bg-slate-50/60 dark:hover:bg-slate-800/30 transition-colors"
+                          >
+                            <td className="py-2.5 px-3.5 font-mono text-slate-500 whitespace-nowrap">
+                              {tx.transactionDate}
+                            </td>
+                            <td className="py-2.5 px-3.5 whitespace-nowrap">
+                              <span className="text-[10px] font-medium px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">
+                                {tx.type.replace('_', ' ')}
+                              </span>
+                            </td>
+                            <td className="py-2.5 px-3.5 font-medium text-slate-900 dark:text-white">
+                              {tx.description}
+                            </td>
+                            <td className="py-2.5 px-3.5 text-slate-500 whitespace-nowrap">
+                              {tx.category}
+                            </td>
+                            <td className="py-2.5 px-3.5 text-right font-bold text-slate-900 dark:text-white whitespace-nowrap">
+                              {formatINR(tx.amountPaise)}
+                            </td>
+                            <td
+                              className={`py-2.5 px-3.5 text-right font-semibold whitespace-nowrap ${
+                                isPositive
+                                  ? 'text-emerald-600 dark:text-emerald-400'
+                                  : isNegative
+                                  ? 'text-rose-600 dark:text-rose-400'
+                                  : 'text-slate-400'
+                              }`}
+                            >
+                              {formatINR(tx.balanceEffectPaise, { showSign: true })}
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+              </>
             )}
           </div>
         </div>

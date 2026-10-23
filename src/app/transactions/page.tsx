@@ -168,7 +168,7 @@ export default function TransactionsPage() {
   };
 
   return (
-    <div className="flex min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 font-sans">
+    <div className="flex flex-col md:flex-row min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 font-sans w-full max-w-full overflow-x-hidden">
       <Navigation
         onOpenAddTransaction={() => {
           setTxToEdit(null);
@@ -176,24 +176,24 @@ export default function TransactionsPage() {
         }}
       />
 
-      <main className="flex-1 pb-24 md:pb-12 pt-6 px-4 sm:px-6 md:px-8 max-w-7xl mx-auto w-full">
+      <main className="flex-1 min-w-0 w-full pb-28 md:pb-12 pt-4 sm:pt-6 px-3.5 sm:px-6 md:px-8 max-w-7xl mx-auto">
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
           <div>
-            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900 dark:text-white">
+            <h1 className="text-xl sm:text-2xl md:text-3xl font-bold tracking-tight text-slate-900 dark:text-white">
               Global Transactions
             </h1>
-            <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
+            <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-0.5 sm:mt-1">
               Search, filter, inspect, and export all recorded transactions.
             </p>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="grid grid-cols-2 sm:flex sm:items-center gap-2 sm:gap-3 w-full sm:w-auto">
             <button
               onClick={exportCSV}
-              className="flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors shadow-2xs cursor-pointer"
+              className="btn-premium-brown-outline px-3 sm:px-3.5 py-2 sm:py-2.5 text-xs sm:text-sm rounded-xl"
             >
-              <Download className="w-3.5 h-3.5 text-slate-500" />
+              <Download className="w-3.5 h-3.5 text-amber-500 shrink-0" />
               <span>Export CSV</span>
             </button>
 
@@ -202,9 +202,9 @@ export default function TransactionsPage() {
                 setTxToEdit(null);
                 setIsAddTxOpen(true);
               }}
-              className="flex items-center gap-1.5 px-4 py-2 text-xs font-semibold text-white bg-slate-900 hover:bg-slate-800 dark:bg-emerald-600 dark:hover:bg-emerald-500 rounded-lg transition-colors shadow-sm cursor-pointer"
+              className="btn-premium-brown px-3 sm:px-4 py-2 sm:py-2.5 text-xs sm:text-sm rounded-xl"
             >
-              <PlusCircle className="w-4 h-4" />
+              <PlusCircle className="w-4 h-4 text-amber-300 shrink-0" />
               <span>+ Record Transaction</span>
             </button>
           </div>
@@ -344,44 +344,21 @@ export default function TransactionsPage() {
               <p>No transactions match the selected filters.</p>
             </div>
           ) : (
-            <div className="overflow-x-auto">
-              <table className="w-full text-left border-collapse text-xs">
-                <thead>
-                  <tr className="border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950/60 text-slate-500 dark:text-slate-400 font-semibold uppercase tracking-wider text-[10px]">
-                    <th className="py-3 px-4">Date</th>
-                    <th className="py-3 px-4">Person</th>
-                    <th className="py-3 px-4">Type</th>
-                    <th className="py-3 px-4">Description</th>
-                    <th className="py-3 px-4">Category</th>
-                    <th className="py-3 px-4 text-right">Amount</th>
-                    <th className="py-3 px-4 text-right">Balance Effect</th>
-                    <th className="py-3 px-4 text-center">Actions</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-100 dark:divide-slate-800/80">
-                  {paginatedTransactions.map((tx) => {
-                    const person = people.find((p) => p.id === tx.personId);
-                    const isPositive = tx.balanceEffectPaise > 0;
-                    const isNegative = tx.balanceEffectPaise < 0;
+            <>
+              {/* Mobile Card List View (< md) */}
+              <div className="block md:hidden divide-y divide-slate-100 dark:divide-slate-800/80">
+                {paginatedTransactions.map((tx) => {
+                  const person = people.find((p) => p.id === tx.personId);
+                  const isPositive = tx.balanceEffectPaise > 0;
+                  const isNegative = tx.balanceEffectPaise < 0;
 
-                    return (
-                      <tr
-                        key={tx.id}
-                        className="hover:bg-slate-50/80 dark:hover:bg-slate-800/40 transition-colors"
-                      >
-                        <td className="py-3 px-4 font-mono text-slate-600 dark:text-slate-400 whitespace-nowrap">
-                          {tx.transactionDate}
-                        </td>
-                        <td className="py-3 px-4 whitespace-nowrap">
-                          <Link
-                            href={`/people/${tx.personId}`}
-                            className="font-semibold text-slate-900 dark:text-white hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors inline-flex items-center gap-1"
-                          >
-                            <span>{person?.name || 'Unknown'}</span>
-                            <ExternalLink className="w-2.5 h-2.5 text-slate-400 opacity-60" />
-                          </Link>
-                        </td>
-                        <td className="py-3 px-4 whitespace-nowrap">
+                  return (
+                    <div key={tx.id} className="p-4 space-y-2.5">
+                      <div className="flex items-start justify-between gap-2">
+                        <div className="flex items-center gap-2">
+                          <span className="font-mono text-[11px] text-slate-500 dark:text-slate-400">
+                            {tx.transactionDate}
+                          </span>
                           <span
                             className={`inline-block px-2 py-0.5 rounded-md font-medium text-[10px] ${
                               tx.type === 'GIVE_MONEY'
@@ -397,61 +374,180 @@ export default function TransactionsPage() {
                           >
                             {tx.type.replace('_', ' ')}
                           </span>
-                        </td>
-                        <td className="py-3 px-4 font-medium text-slate-900 dark:text-white max-w-xs truncate">
-                          {tx.description}
-                          {tx.notes && (
-                            <span className="block text-[11px] text-slate-400 font-normal italic truncate">
-                              {tx.notes}
-                            </span>
-                          )}
-                        </td>
-                        <td className="py-3 px-4 text-slate-500 whitespace-nowrap">
-                          <span className="bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded-md text-[11px]">
-                            {tx.category}
+                        </div>
+                        <div className="text-right">
+                          <span className="text-sm font-bold text-slate-900 dark:text-white block">
+                            {formatINR(tx.amountPaise)}
                           </span>
-                        </td>
-                        <td className="py-3 px-4 text-right font-bold text-slate-900 dark:text-white whitespace-nowrap">
-                          {formatINR(tx.amountPaise)}
-                        </td>
-                        <td
-                          className={`py-3 px-4 text-right font-semibold whitespace-nowrap ${
-                            isPositive
-                              ? 'text-emerald-600 dark:text-emerald-400'
-                              : isNegative
-                              ? 'text-rose-600 dark:text-rose-400'
-                              : 'text-slate-400'
-                          }`}
+                          <span
+                            className={`text-[11px] font-semibold ${
+                              isPositive
+                                ? 'text-emerald-600 dark:text-emerald-400'
+                                : isNegative
+                                ? 'text-rose-600 dark:text-rose-400'
+                                : 'text-slate-400'
+                            }`}
+                          >
+                            {formatINR(tx.balanceEffectPaise, { showSign: true })}
+                          </span>
+                        </div>
+                      </div>
+
+                      <div className="flex items-baseline justify-between gap-2">
+                        <div>
+                          <p className="text-xs font-semibold text-slate-900 dark:text-white">
+                            {tx.description}
+                          </p>
+                          <Link
+                            href={`/people/${tx.personId}`}
+                            className="text-[11px] text-amber-700 dark:text-amber-400 font-medium hover:underline inline-flex items-center gap-0.5 mt-0.5"
+                          >
+                            <span>{person?.name || 'Unknown'}</span>
+                            <ExternalLink className="w-2.5 h-2.5 opacity-70" />
+                          </Link>
+                          {tx.notes && (
+                            <p className="text-[11px] text-slate-400 italic mt-0.5">{tx.notes}</p>
+                          )}
+                        </div>
+                        <span className="bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 px-2 py-0.5 rounded text-[10px] shrink-0">
+                          {tx.category}
+                        </span>
+                      </div>
+
+                      <div className="flex items-center justify-end gap-2 pt-1 border-t border-slate-100/60 dark:border-slate-800/40">
+                        <button
+                          onClick={() => {
+                            setTxToEdit(tx);
+                            setIsAddTxOpen(true);
+                          }}
+                          className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-xs text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800"
                         >
-                          {formatINR(tx.balanceEffectPaise, { showSign: true })}
-                        </td>
-                        <td className="py-3 px-4 text-center whitespace-nowrap">
-                          <div className="flex items-center justify-center gap-1.5">
-                            <button
-                              onClick={() => {
-                                setTxToEdit(tx);
-                                setIsAddTxOpen(true);
-                              }}
-                              className="p-1 rounded text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 transition-colors cursor-pointer"
-                              title="Edit transaction"
+                          <Edit3 className="w-3.5 h-3.5" />
+                          <span>Edit</span>
+                        </button>
+                        <button
+                          onClick={() => setTxToDelete(tx)}
+                          className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-xs text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/40"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                          <span>Delete</span>
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* Desktop Table View (>= md) */}
+              <div className="hidden md:block overflow-x-auto">
+                <table className="w-full text-left border-collapse text-xs">
+                  <thead>
+                    <tr className="border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950/60 text-slate-500 dark:text-slate-400 font-semibold uppercase tracking-wider text-[10px]">
+                      <th className="py-3 px-4">Date</th>
+                      <th className="py-3 px-4">Person</th>
+                      <th className="py-3 px-4">Type</th>
+                      <th className="py-3 px-4">Description</th>
+                      <th className="py-3 px-4">Category</th>
+                      <th className="py-3 px-4 text-right">Amount</th>
+                      <th className="py-3 px-4 text-right">Balance Effect</th>
+                      <th className="py-3 px-4 text-center">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-100 dark:divide-slate-800/80">
+                    {paginatedTransactions.map((tx) => {
+                      const person = people.find((p) => p.id === tx.personId);
+                      const isPositive = tx.balanceEffectPaise > 0;
+                      const isNegative = tx.balanceEffectPaise < 0;
+
+                      return (
+                        <tr
+                          key={tx.id}
+                          className="hover:bg-slate-50/80 dark:hover:bg-slate-800/40 transition-colors"
+                        >
+                          <td className="py-3 px-4 font-mono text-slate-600 dark:text-slate-400 whitespace-nowrap">
+                            {tx.transactionDate}
+                          </td>
+                          <td className="py-3 px-4 whitespace-nowrap">
+                            <Link
+                              href={`/people/${tx.personId}`}
+                              className="font-semibold text-slate-900 dark:text-white hover:text-amber-600 dark:hover:text-amber-400 transition-colors inline-flex items-center gap-1"
                             >
-                              <Edit3 className="w-3.5 h-3.5" />
-                            </button>
-                            <button
-                              onClick={() => setTxToDelete(tx)}
-                              className="p-1 rounded text-slate-400 hover:text-rose-600 transition-colors cursor-pointer"
-                              title="Delete transaction"
+                              <span>{person?.name || 'Unknown'}</span>
+                              <ExternalLink className="w-2.5 h-2.5 text-slate-400 opacity-60" />
+                            </Link>
+                          </td>
+                          <td className="py-3 px-4 whitespace-nowrap">
+                            <span
+                              className={`inline-block px-2 py-0.5 rounded-md font-medium text-[10px] ${
+                                tx.type === 'GIVE_MONEY'
+                                  ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/80 dark:text-emerald-300'
+                                  : tx.type === 'RECEIVE_MONEY'
+                                  ? 'bg-indigo-50 text-indigo-700 dark:bg-indigo-950/80 dark:text-indigo-300'
+                                  : tx.type === 'EXPENSE'
+                                  ? 'bg-amber-50 text-amber-700 dark:bg-amber-950/80 dark:text-amber-300'
+                                  : tx.type === 'REPAYMENT'
+                                  ? 'bg-teal-50 text-teal-700 dark:bg-teal-950/80 dark:text-teal-300'
+                                  : 'bg-purple-50 text-purple-700 dark:bg-purple-950/80 dark:text-purple-300'
+                              }`}
                             >
-                              <Trash2 className="w-3.5 h-3.5" />
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            </div>
+                              {tx.type.replace('_', ' ')}
+                            </span>
+                          </td>
+                          <td className="py-3 px-4 font-medium text-slate-900 dark:text-white max-w-xs truncate">
+                            {tx.description}
+                            {tx.notes && (
+                              <span className="block text-[11px] text-slate-400 font-normal italic truncate">
+                                {tx.notes}
+                              </span>
+                            )}
+                          </td>
+                          <td className="py-3 px-4 text-slate-500 whitespace-nowrap">
+                            <span className="bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded-md text-[11px]">
+                              {tx.category}
+                            </span>
+                          </td>
+                          <td className="py-3 px-4 text-right font-bold text-slate-900 dark:text-white whitespace-nowrap">
+                            {formatINR(tx.amountPaise)}
+                          </td>
+                          <td
+                            className={`py-3 px-4 text-right font-semibold whitespace-nowrap ${
+                              isPositive
+                                ? 'text-emerald-600 dark:text-emerald-400'
+                                : isNegative
+                                ? 'text-rose-600 dark:text-rose-400'
+                                : 'text-slate-400'
+                            }`}
+                          >
+                            {formatINR(tx.balanceEffectPaise, { showSign: true })}
+                          </td>
+                          <td className="py-3 px-4 text-center whitespace-nowrap">
+                            <div className="flex items-center justify-center gap-1.5">
+                              <button
+                                onClick={() => {
+                                  setTxToEdit(tx);
+                                  setIsAddTxOpen(true);
+                                }}
+                                className="p-1 rounded text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 transition-colors cursor-pointer"
+                                title="Edit transaction"
+                              >
+                                <Edit3 className="w-3.5 h-3.5" />
+                              </button>
+                              <button
+                                onClick={() => setTxToDelete(tx)}
+                                className="p-1 rounded text-slate-400 hover:text-rose-600 transition-colors cursor-pointer"
+                                title="Delete transaction"
+                              >
+                                <Trash2 className="w-3.5 h-3.5" />
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            </>
           )}
 
           {/* Pagination Controls */}

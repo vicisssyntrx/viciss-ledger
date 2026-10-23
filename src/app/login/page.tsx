@@ -150,7 +150,7 @@ function LoginContent() {
               }}
               className={`flex-1 py-2 text-center rounded-lg transition-colors cursor-pointer ${
                 mode === 'signin'
-                  ? 'bg-slate-800 text-white shadow-xs'
+                  ? 'bg-amber-950/40 text-amber-200 border border-amber-800/40 shadow-xs'
                   : 'text-slate-400 hover:text-white'
               }`}
             >
@@ -165,7 +165,7 @@ function LoginContent() {
               }}
               className={`flex-1 py-2 text-center rounded-lg transition-colors cursor-pointer ${
                 mode === 'signup'
-                  ? 'bg-slate-800 text-white shadow-xs'
+                  ? 'bg-amber-950/40 text-amber-200 border border-amber-800/40 shadow-xs'
                   : 'text-slate-400 hover:text-white'
               }`}
             >
@@ -236,10 +236,10 @@ function LoginContent() {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-semibold text-sm shadow-md transition-all cursor-pointer disabled:opacity-50"
+              className="btn-premium-brown w-full py-3 rounded-xl text-sm"
             >
               <span>{isLoading ? 'Authenticating...' : mode === 'signin' ? 'Sign In to Dashboard' : 'Create Owner Account'}</span>
-              <ArrowRight className="w-4 h-4" />
+              <ArrowRight className="w-4 h-4 text-amber-300" />
             </button>
           </form>
 
@@ -248,7 +248,7 @@ function LoginContent() {
             <button
               type="button"
               onClick={handleQuickDemoAccess}
-              className="w-full flex items-center justify-center gap-2 py-2 rounded-xl bg-slate-800/60 hover:bg-slate-800 text-slate-300 hover:text-white text-xs font-medium border border-slate-700/60 transition-colors cursor-pointer"
+              className="btn-premium-brown-outline w-full py-2.5 rounded-xl text-xs"
             >
               <Sparkles className="w-3.5 h-3.5 text-amber-400" />
               <span>Instant Owner Access (Demo Mode)</span>

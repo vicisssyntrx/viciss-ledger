@@ -84,16 +84,16 @@ export function Navigation({
           <div className="flex flex-col gap-2 pt-2">
             <button
               onClick={onOpenAddTransaction}
-              className="flex items-center justify-center gap-2 w-full py-2.5 px-3 rounded-lg bg-slate-900 hover:bg-slate-800 dark:bg-emerald-600 dark:hover:bg-emerald-500 text-white font-medium text-sm transition-all shadow-sm shadow-slate-900/10 cursor-pointer"
+              className="btn-premium-brown w-full py-2.5 px-3 rounded-xl text-sm"
             >
-              <PlusCircle className="w-4 h-4" />
+              <PlusCircle className="w-4 h-4 text-amber-300" />
               <span>Record Transaction</span>
             </button>
             <button
               onClick={onOpenAddPerson}
-              className="flex items-center justify-center gap-2 w-full py-2 px-3 rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-medium text-xs transition-colors border border-slate-200 dark:border-slate-700 cursor-pointer"
+              className="btn-premium-brown-outline w-full py-2 px-3 rounded-xl text-xs"
             >
-              <UserPlus className="w-3.5 h-3.5" />
+              <UserPlus className="w-3.5 h-3.5 text-amber-500" />
               <span>Add New Person</span>
             </button>
           </div>
@@ -114,13 +114,13 @@ export function Navigation({
                 <Link
                   key={item.href}
                   href={item.href}
-                  className={`flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm font-medium transition-colors ${
+                  className={`flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all ${
                     isActive
-                      ? 'bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white font-semibold'
+                      ? 'bg-amber-950/15 dark:bg-amber-950/40 text-amber-900 dark:text-amber-200 font-semibold border-l-2 border-amber-600 dark:border-amber-500'
                       : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/60 hover:text-slate-900 dark:hover:text-slate-200'
                   }`}
                 >
-                  <Icon className={`w-4 h-4 ${isActive ? 'text-emerald-600 dark:text-emerald-400' : ''}`} />
+                  <Icon className={`w-4 h-4 ${isActive ? 'text-amber-600 dark:text-amber-400' : ''}`} />
                   <span>{item.label}</span>
                 </Link>
               );
@@ -132,16 +132,16 @@ export function Navigation({
         <div className="flex flex-col gap-3 pt-5 border-t border-slate-200 dark:border-slate-800">
           {/* Owner Account Card / Login Button */}
           {owner ? (
-            <div className="flex items-center justify-between p-2 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/70 dark:border-slate-700/60 text-xs">
+            <div className="flex items-center justify-between p-2 rounded-xl bg-slate-50 dark:bg-slate-850 border border-slate-200/70 dark:border-slate-800 text-xs">
               <div className="flex items-center gap-2 overflow-hidden">
-                <div className="w-6 h-6 rounded-full bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 flex items-center justify-center font-bold text-[10px] shrink-0 border border-emerald-300 dark:border-emerald-800">
+                <div className="w-6 h-6 rounded-full bg-amber-100 dark:bg-amber-950/80 text-amber-800 dark:text-amber-300 flex items-center justify-center font-bold text-[10px] shrink-0 border border-amber-300 dark:border-amber-800">
                   {owner.email.substring(0, 1).toUpperCase()}
                 </div>
                 <div className="overflow-hidden">
                   <span className="text-[11px] font-semibold text-slate-900 dark:text-slate-200 block truncate" title={owner.email}>
                     {owner.email}
                   </span>
-                  <span className="text-[9px] text-emerald-600 dark:text-emerald-400 font-medium">Owner Active</span>
+                  <span className="text-[9px] text-amber-600 dark:text-amber-400 font-medium">Owner Active</span>
                 </div>
               </div>
               <button
@@ -155,9 +155,9 @@ export function Navigation({
           ) : (
             <Link
               href="/login"
-              className="flex items-center justify-center gap-2 py-2 px-3 rounded-lg border border-slate-200 dark:border-slate-700 text-xs text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 font-medium transition-colors"
+              className="flex items-center justify-center gap-2 py-2 px-3 rounded-xl border border-slate-200 dark:border-slate-700 text-xs text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 font-medium transition-colors"
             >
-              <LogIn className="w-3.5 h-3.5 text-emerald-600" />
+              <LogIn className="w-3.5 h-3.5 text-amber-600" />
               <span>Owner Sign In</span>
             </Link>
           )}
@@ -179,16 +179,16 @@ export function Navigation({
       </aside>
 
       {/* MOBILE TOP HEADER */}
-      <header className="md:hidden flex items-center justify-between p-4 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 sticky top-0 z-40">
-        <Link href="/">
+      <header className="md:hidden w-full flex items-center justify-between px-4 py-3 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 sticky top-0 z-40 shrink-0">
+        <Link href="/" className="shrink-0">
           <BrandLogo size="sm" showTagline={false} />
         </Link>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5">
           {owner ? (
             <button
               onClick={handleSignOut}
               title="Log Out"
-              className="p-2 rounded-lg text-slate-500 hover:text-rose-600"
+              className="p-2 rounded-lg text-slate-500 dark:text-slate-400 hover:text-rose-600 active:bg-slate-100 dark:active:bg-slate-800"
             >
               <LogOut className="w-4 h-4" />
             </button>
@@ -196,7 +196,7 @@ export function Navigation({
             <Link
               href="/login"
               title="Sign In"
-              className="p-2 rounded-lg text-slate-500 hover:text-slate-900"
+              className="p-2 rounded-lg text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
             >
               <LogIn className="w-4 h-4" />
             </Link>
@@ -206,20 +206,21 @@ export function Navigation({
             aria-label="Toggle theme"
             className="p-2 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800"
           >
-            {isDark ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4" />}
+            {isDark ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-slate-400" />}
           </button>
           <button
             onClick={onOpenAddTransaction}
-            className="p-2 rounded-lg bg-slate-900 dark:bg-emerald-600 text-white"
+            className="btn-premium-brown px-3 py-1.5 rounded-lg text-xs"
             title="Record Transaction"
           >
-            <PlusCircle className="w-4 h-4" />
+            <PlusCircle className="w-3.5 h-3.5 text-amber-300" />
+            <span className="hidden xs:inline text-xs">Record</span>
           </button>
         </div>
       </header>
 
       {/* MOBILE BOTTOM NAVIGATION BAR */}
-      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-t border-slate-200 dark:border-slate-800 flex items-center justify-around py-2.5 px-3">
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-t border-slate-200 dark:border-slate-800 flex items-center justify-around pt-2 pb-safe px-2 shadow-lg">
         {navItems.map((item) => {
           const Icon = item.icon;
           const isActive =
@@ -231,10 +232,10 @@ export function Navigation({
             <Link
               key={item.href}
               href={item.href}
-              className={`flex flex-col items-center gap-1 text-[11px] font-medium transition-colors ${
+              className={`flex flex-col items-center justify-center gap-0.5 py-1 px-3 text-[11px] font-medium transition-colors min-h-[44px] ${
                 isActive
-                  ? 'text-emerald-600 dark:text-emerald-400 font-semibold'
-                  : 'text-slate-500 dark:text-slate-400'
+                  ? 'text-amber-600 dark:text-amber-400 font-semibold'
+                  : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
               }`}
             >
               <Icon className="w-5 h-5" />
