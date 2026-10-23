@@ -20,7 +20,7 @@ function LoginContent() {
   const searchParams = useSearchParams();
   const redirectUrl = searchParams.get('redirect') || '/';
 
-  const [username, setUsername] = useState('admin');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -90,7 +90,7 @@ function LoginContent() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col justify-center items-center p-4 relative overflow-hidden font-sans">
+    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col justify-center items-center p-4 relative overflow-hidden font-sans dark">
       {/* Background warm bronze/gold glows */}
       <div className="absolute top-1/4 -left-32 w-96 h-96 bg-amber-700/10 rounded-full blur-3xl pointer-events-none" />
       <div className="absolute bottom-1/4 -right-32 w-96 h-96 bg-amber-600/10 rounded-full blur-3xl pointer-events-none" />
@@ -99,7 +99,7 @@ function LoginContent() {
         {/* Brand Header */}
         <div className="text-center space-y-2">
           <div className="inline-block mx-auto mb-2">
-            <BrandLogo size="lg" showTagline={false} />
+            <BrandLogo size="lg" showTagline={false} inverted />
           </div>
           <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-white flex items-center justify-center gap-2">
             <KeyRound className="w-5 h-5 text-amber-500" />
@@ -131,7 +131,7 @@ function LoginContent() {
                   type="text"
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
-                  placeholder="admin"
+                  placeholder="Enter username"
                   autoComplete="username"
                   className="w-full pl-10 pr-3.5 py-2.5 rounded-xl border border-slate-700 bg-slate-950/60 text-white text-sm placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-amber-500"
                   required
@@ -175,10 +175,6 @@ function LoginContent() {
               <ArrowRight className="w-4 h-4 text-amber-300" />
             </button>
           </form>
-
-          <div className="pt-2 text-center text-[11px] text-slate-500">
-            Default credentials: <span className="font-mono text-slate-400">admin</span> / <span className="font-mono text-slate-400">2030</span>
-          </div>
         </div>
 
         {/* Security & Public Sharing Information */}
