@@ -134,7 +134,7 @@ export async function GET() {
 
     // Total Present Bank / Account Balance
     // = My own personal funds + other people's money currently held in my account
-    const totalPresentAccountBalancePaise = myPersonalFundsPaise + (totalInflowsPaise - totalOutflowsPaise);
+    const totalPresentAccountBalancePaise = myPersonalFundsPaise + totalOthersHeldPaise;
 
     return NextResponse.json({
       settings,
