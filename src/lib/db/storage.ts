@@ -254,17 +254,9 @@ export interface PersonalAccountSettings {
 }
 
 const DEFAULT_PERSONAL_ACCOUNT: PersonalAccountSettings = {
-  initialBalancePaise: 1700000, // ₹17,000.00 (17k baseline)
+  initialBalancePaise: 0, // ₹0.00 pure zero default
   manualAdjustmentsPaise: 0,
-  history: [
-    {
-      id: 'init-seed',
-      type: 'SET',
-      amountPaise: 1700000,
-      description: 'Initial starting balance in personal account',
-      createdAt: new Date().toISOString(),
-    },
-  ],
+  history: [],
 };
 
 export function getPersonalAccountSettings(): PersonalAccountSettings {

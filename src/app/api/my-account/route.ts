@@ -197,10 +197,10 @@ export async function POST(req: NextRequest) {
     }
 
     if (body.action === 'RESET') {
-      const resetBasePaise = body.amountRupees !== undefined ? rupeesToPaise(body.amountRupees) : 1700000;
+      const resetBasePaise = body.amountRupees !== undefined ? rupeesToPaise(body.amountRupees) : 0;
       settings.initialBalancePaise = resetBasePaise;
       settings.manualAdjustmentsPaise = 0;
-      settings.history = [
+      settings.history = resetBasePaise > 0 ? [
         {
           id: `reset-${Date.now()}`,
           type: 'SET',
@@ -208,7 +208,7 @@ export async function POST(req: NextRequest) {
           description: body.description?.trim() || 'Reset bank balance calculations',
           createdAt: new Date().toISOString(),
         },
-      ];
+      ] : [];
       savePersonalAccountSettings(settings);
       return NextResponse.json({ success: true, settings });
     }
