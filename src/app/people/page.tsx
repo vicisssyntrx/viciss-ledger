@@ -233,9 +233,26 @@ export default function PeoplePage() {
                           {person.personName.substring(0, 2).toUpperCase()}
                         </div>
                         <div>
-                          <h3 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white group-hover:text-amber-500 dark:group-hover:text-amber-400 transition-colors leading-tight">
-                            {person.personName}
-                          </h3>
+                          <div className="flex items-center gap-2">
+                            <h3 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white group-hover:text-amber-500 dark:group-hover:text-amber-400 transition-colors leading-tight">
+                              {person.personName}
+                            </h3>
+                            <span
+                              className={`text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded ${
+                                (person.ledgerType || raw?.ledgerType) === 'CUSTODIAL'
+                                  ? 'bg-amber-500/20 text-amber-700 dark:text-amber-300 border border-amber-500/30'
+                                  : (person.ledgerType || raw?.ledgerType) === 'BORROWING'
+                                  ? 'bg-rose-500/20 text-rose-700 dark:text-rose-300 border border-rose-500/30'
+                                  : 'bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30'
+                              }`}
+                            >
+                              {(person.ledgerType || raw?.ledgerType) === 'CUSTODIAL'
+                                ? 'Custodial / Holding'
+                                : (person.ledgerType || raw?.ledgerType) === 'BORROWING'
+                                ? 'Borrowing'
+                                : 'Lending'}
+                            </span>
+                          </div>
                           {person.nickname && (
                             <span className="text-xs text-slate-400 font-medium mt-0.5 block">
                               @{person.nickname}

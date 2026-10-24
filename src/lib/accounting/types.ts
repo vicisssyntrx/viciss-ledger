@@ -46,12 +46,21 @@ export interface SharedSplitConfig {
 
 export type BalanceStatus = 'OWED_TO_ME' | 'I_OWE' | 'SETTLED';
 
+/**
+ * Three distinct ledger relationship models:
+ * 1. LENDING: They owe me (I lent money or paid for them; outside money to track).
+ * 2. BORROWING: I owe them (I borrowed from them; personal liability to repay).
+ * 3. CUSTODIAL: Holding / Storing funds for them (deposit held in my account; unspent portion is held cash, changes only upon spending or repayment).
+ */
+export type LedgerType = 'LENDING' | 'BORROWING' | 'CUSTODIAL';
+
 export interface Person {
   id: string;
   ownerId: string;
   name: string;
   nickname?: string;
   color?: string;
+  ledgerType?: LedgerType;
   phone?: string;
   email?: string;
   notes?: string;
@@ -95,6 +104,7 @@ export interface PersonSummary {
   personName: string;
   nickname?: string;
   color?: string;
+  ledgerType?: LedgerType;
   isArchived: boolean;
   currentBalancePaise: number;
   status: BalanceStatus;

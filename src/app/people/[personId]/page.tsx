@@ -196,16 +196,31 @@ function IndividualLedgerContent() {
                   >
                     {person.name.substring(0, 2).toUpperCase()}
                   </div>
-              <div>
-                <div className="flex items-center gap-2">
-                  <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
-                    {person.name}
-                  </h1>
+                  <div>
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
+                        {person.name}
+                      </h1>
                   {person.nickname && (
                     <span className="text-sm font-medium text-slate-400">
                       (@{person.nickname})
                     </span>
                   )}
+                  <span
+                    className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md ${
+                      person.ledgerType === 'CUSTODIAL'
+                        ? 'bg-amber-500/20 text-amber-700 dark:text-amber-300 border border-amber-500/30'
+                        : person.ledgerType === 'BORROWING'
+                        ? 'bg-rose-500/20 text-rose-700 dark:text-rose-300 border border-rose-500/30'
+                        : 'bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30'
+                    }`}
+                  >
+                    {person.ledgerType === 'CUSTODIAL'
+                      ? 'Custodial / Holding Funds'
+                      : person.ledgerType === 'BORROWING'
+                      ? 'Borrowing / Personal Liability'
+                      : 'Lending / Money to Receive'}
+                  </span>
                 </div>
                 <div className="flex flex-wrap items-center gap-3 text-xs text-slate-500 dark:text-slate-400 mt-1">
                   {person.phone && <span>{person.phone}</span>}

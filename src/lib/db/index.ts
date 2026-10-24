@@ -2,7 +2,15 @@ import crypto from 'crypto';
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { Person, Transaction } from '../accounting/types';
 import { calculateBalanceEffectPaise, calculateTotalBalancePaise } from '../accounting/engine';
-import { readDatabase, writeDatabase, generateSecureToken, getPersonColors, savePersonColor } from './storage';
+import {
+  readDatabase,
+  writeDatabase,
+  generateSecureToken,
+  getPersonColors,
+  savePersonColor,
+  getPersonLedgerTypes,
+  savePersonLedgerType,
+} from './storage';
 
 export const isSupabaseConfigured = (): boolean => {
   return Boolean(
@@ -22,13 +30,17 @@ function getSupabase(): SupabaseClient | null {
 
 function mapPersonFromDb(row: any): Person {
   const storedColors = getPersonColors();
+  const storedTypes = getPersonLedgerTypes();
   const resolvedColor = row.color || storedColors[row.id] || 'default';
+  const resolvedLedgerType = row.ledger_type || storedTypes[row.id] || 'LENDING';
+
   return {
     id: row.id,
     ownerId: row.owner_id || 'default-owner',
     name: row.name,
     nickname: row.nickname || undefined,
     color: resolvedColor,
+    ledgerType: resolvedLedgerType,
     phone: row.phone || undefined,
     email: row.email || undefined,
     notes: row.notes || undefined,
@@ -109,6 +121,7 @@ export async function createPerson(data: {
   name: string;
   nickname?: string;
   color?: string;
+  ledgerType?: 'LENDING' | 'BORROWING' | 'CUSTODIAL';
   phone?: string;
   email?: string;
   notes?: string;
@@ -116,12 +129,14 @@ export async function createPerson(data: {
   const token = generateSecureToken();
   const supabase = getSupabase();
   const chosenColor = data.color?.trim() || 'default';
+  const chosenLedgerType = data.ledgerType || 'LENDING';
 
   if (supabase) {
     const payload: any = {
       name: data.name.trim(),
       nickname: data.nickname?.trim() || null,
       color: chosenColor,
+      ledger_type: chosenLedgerType,
       phone: data.phone?.trim() || null,
       email: data.email?.trim() || null,
       notes: data.notes?.trim() || null,
@@ -131,8 +146,9 @@ export async function createPerson(data: {
       share_policy: 'ALL',
     };
     let { data: inserted, error } = await supabase.from('people').insert([payload]).select().single();
-    if (error && (error.message?.includes('color') || error.code === 'PGRST204' || error.message?.includes('column'))) {
+    if (error && (error.message?.includes('color') || error.message?.includes('ledger_type') || error.code === 'PGRST204' || error.message?.includes('column'))) {
       delete payload.color;
+      delete payload.ledger_type;
       const retry = await supabase.from('people').insert([payload]).select().single();
       if (!retry.error && retry.data) {
         inserted = retry.data;
@@ -143,11 +159,11 @@ export async function createPerson(data: {
     if (error) {
       console.error('Supabase createPerson error, falling back to local DB:', error);
     } else if (inserted) {
-      if (chosenColor) {
-        savePersonColor(inserted.id, chosenColor);
-      }
+      if (chosenColor) savePersonColor(inserted.id, chosenColor);
+      savePersonLedgerType(inserted.id, chosenLedgerType);
       const res = mapPersonFromDb(inserted);
       res.color = chosenColor;
+      res.ledgerType = chosenLedgerType;
       return res;
     }
   }
@@ -160,6 +176,7 @@ export async function createPerson(data: {
     name: data.name.trim(),
     nickname: data.nickname?.trim(),
     color: chosenColor,
+    ledgerType: chosenLedgerType,
     phone: data.phone?.trim(),
     email: data.email?.trim(),
     notes: data.notes?.trim(),
@@ -174,6 +191,7 @@ export async function createPerson(data: {
   if (chosenColor) {
     savePersonColor(newPerson.id, chosenColor);
   }
+  savePersonLedgerType(newPerson.id, chosenLedgerType);
 
   db.people.push(newPerson);
   writeDatabase(db);
@@ -187,6 +205,9 @@ export async function updatePerson(
   if (updates.color) {
     savePersonColor(id, updates.color);
   }
+  if (updates.ledgerType) {
+    savePersonLedgerType(id, updates.ledgerType);
+  }
 
   const supabase = getSupabase();
   let supabaseResult: Person | null = null;
@@ -196,6 +217,7 @@ export async function updatePerson(
     if (updates.name !== undefined) dbUpdates.name = updates.name;
     if (updates.nickname !== undefined) dbUpdates.nickname = updates.nickname;
     if (updates.color !== undefined) dbUpdates.color = updates.color;
+    if (updates.ledgerType !== undefined) dbUpdates.ledger_type = updates.ledgerType;
     if (updates.phone !== undefined) dbUpdates.phone = updates.phone;
     if (updates.email !== undefined) dbUpdates.email = updates.email;
     if (updates.notes !== undefined) dbUpdates.notes = updates.notes;
@@ -205,8 +227,9 @@ export async function updatePerson(
     if (updates.sharePolicy !== undefined) dbUpdates.share_policy = updates.sharePolicy;
 
     let { data, error } = await supabase.from('people').update(dbUpdates).eq('id', id).select().single();
-    if (error && (error.message?.includes('color') || error.code === 'PGRST204' || error.message?.includes('column'))) {
+    if (error && (error.message?.includes('color') || error.message?.includes('ledger_type') || error.code === 'PGRST204' || error.message?.includes('column'))) {
       delete dbUpdates.color;
+      delete dbUpdates.ledger_type;
       const retry = await supabase.from('people').update(dbUpdates).eq('id', id).select().single();
       if (!retry.error && retry.data) {
         data = retry.data;
@@ -217,6 +240,9 @@ export async function updatePerson(
       supabaseResult = mapPersonFromDb(data);
       if (updates.color) {
         supabaseResult.color = updates.color;
+      }
+      if (updates.ledgerType) {
+        supabaseResult.ledgerType = updates.ledgerType;
       }
     }
   }

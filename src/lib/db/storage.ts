@@ -314,6 +314,53 @@ export function savePersonColor(personId: string, color: string): void {
   }
 }
 
+export function getPersonLedgerTypes(): Record<string, 'LENDING' | 'BORROWING' | 'CUSTODIAL'> {
+  const { dataDir } = getStoragePaths();
+  const file = path.join(dataDir, 'person_ledger_types.json');
+  try {
+    if (fs.existsSync(file)) {
+      const raw = fs.readFileSync(file, 'utf-8');
+      return JSON.parse(raw);
+    }
+  } catch (err) {
+    console.error('Error reading person ledger types file:', err);
+  }
+  try {
+    const tmpFile = path.join(os.tmpdir(), '.viciss_data', 'person_ledger_types.json');
+    if (fs.existsSync(tmpFile)) {
+      const raw = fs.readFileSync(tmpFile, 'utf-8');
+      return JSON.parse(raw);
+    }
+  } catch (e) {
+    // ignore
+  }
+  return {};
+}
+
+export function savePersonLedgerType(personId: string, ledgerType: 'LENDING' | 'BORROWING' | 'CUSTODIAL'): void {
+  const { dataDir } = getStoragePaths();
+  const types = getPersonLedgerTypes();
+  types[personId] = ledgerType;
+
+  const writeTypes = (targetDir: string) => {
+    if (!fs.existsSync(targetDir)) {
+      fs.mkdirSync(targetDir, { recursive: true });
+    }
+    const file = path.join(targetDir, 'person_ledger_types.json');
+    fs.writeFileSync(file, JSON.stringify(types, null, 2), 'utf-8');
+  };
+
+  try {
+    writeTypes(dataDir);
+  } catch (err) {
+    try {
+      writeTypes(path.join(os.tmpdir(), '.viciss_data'));
+    } catch (e) {
+      console.error('Failed to write person ledger types:', e);
+    }
+  }
+}
+
 export interface PersonalAccountSettings {
   initialBalancePaise: number; // e.g. 17545.52 => 1754552
   manualAdjustmentsPaise: number; // Sum of manual credits (+ve) and debits (-ve)

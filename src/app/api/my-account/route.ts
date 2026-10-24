@@ -38,6 +38,7 @@ export async function GET() {
       personId: string;
       name: string;
       color?: string;
+      ledgerType: 'LENDING' | 'BORROWING' | 'CUSTODIAL';
       inflowPaise: number;
       outflowPaise: number;
       netContributionPaise: number;
@@ -49,6 +50,7 @@ export async function GET() {
         personId: p.id,
         name: p.name,
         color: p.color,
+        ledgerType: p.ledgerType || 'LENDING',
         inflowPaise: 0,
         outflowPaise: 0,
         netContributionPaise: 0,
@@ -62,6 +64,7 @@ export async function GET() {
         peopleContributions[pid] = {
           personId: pid,
           name: 'Unassigned / Contact',
+          ledgerType: 'LENDING',
           inflowPaise: 0,
           outflowPaise: 0,
           netContributionPaise: 0,
@@ -123,11 +126,14 @@ export async function GET() {
     })).filter((c) => c.inflowPaise > 0 || c.outflowPaise > 0);
 
     // Sum of funds from other people currently resting in my bank account
-    // If a person gave me ₹15,000 and I spent ₹13,428 on their behalf, net is +₹1,572 still sitting in my account
-    const totalOthersHeldPaise = breakdown.reduce(
-      (sum, b) => (b.netContributionPaise > 0 ? sum + b.netContributionPaise : sum),
-      0
-    );
+    // CUSTODIAL ledgers: unspent funds held on their behalf (+ve net) are in my account
+    // BORROWING & LENDING ledgers: pure owe/debt tracking, does NOT count as money stored for them
+    const totalOthersHeldPaise = breakdown.reduce((sum, b) => {
+      if (b.ledgerType === 'CUSTODIAL' && b.netContributionPaise > 0) {
+        return sum + b.netContributionPaise;
+      }
+      return sum;
+    }, 0);
 
     // My own personal balance (initial baseline + manual adjustments)
     const myPersonalFundsPaise = settings.initialBalancePaise + settings.manualAdjustmentsPaise;

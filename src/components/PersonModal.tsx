@@ -1,8 +1,8 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { X, User, Phone, Mail, FileText, ShieldAlert, Palette } from 'lucide-react';
-import { Person } from '@/lib/accounting/types';
+import { X, User, Phone, Mail, FileText, ShieldAlert, Palette, ArrowUpRight, ArrowDownLeft, ShieldCheck } from 'lucide-react';
+import { Person, LedgerType } from '@/lib/accounting/types';
 import { CARD_COLORS } from '@/lib/accounting/cardColors';
 
 interface PersonModalProps {
@@ -21,6 +21,7 @@ export function PersonModal({
   const [name, setName] = useState('');
   const [nickname, setNickname] = useState('');
   const [color, setColor] = useState('default');
+  const [ledgerType, setLedgerType] = useState<LedgerType>('LENDING');
   const [phone, setPhone] = useState('');
   const [email, setEmail] = useState('');
   const [notes, setNotes] = useState('');
@@ -32,6 +33,7 @@ export function PersonModal({
       setName(personToEdit.name);
       setNickname(personToEdit.nickname || '');
       setColor(personToEdit.color || 'default');
+      setLedgerType(personToEdit.ledgerType || 'LENDING');
       setPhone(personToEdit.phone || '');
       setEmail(personToEdit.email || '');
       setNotes(personToEdit.notes || '');
@@ -39,6 +41,7 @@ export function PersonModal({
       setName('');
       setNickname('');
       setColor('default');
+      setLedgerType('LENDING');
       setPhone('');
       setEmail('');
       setNotes('');
@@ -85,6 +88,7 @@ export function PersonModal({
         name: name.trim(),
         nickname: nickname.trim() || undefined,
         color: color || 'default',
+        ledgerType,
         phone: phone.trim() || undefined,
         email: email.trim() || undefined,
         notes: notes.trim() || undefined,
@@ -156,6 +160,71 @@ export function PersonModal({
               {error}
             </div>
           )}
+
+          {/* 3 Core Ledger Types */}
+          <div>
+            <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-300 mb-1.5">
+              Account Relationship Type *
+            </label>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+              {/* Option 1: Lending */}
+              <button
+                type="button"
+                onClick={() => setLedgerType('LENDING')}
+                className={`p-3 rounded-xl border text-left transition-all cursor-pointer flex flex-col justify-between ${
+                  ledgerType === 'LENDING'
+                    ? 'border-emerald-500 bg-emerald-500/10 text-emerald-900 dark:text-emerald-200 ring-2 ring-emerald-500/30'
+                    : 'border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-800/60 text-slate-700 dark:text-slate-300 hover:border-slate-300 dark:hover:border-slate-700'
+                }`}
+              >
+                <div className="flex items-center gap-1.5 mb-1">
+                  <ArrowUpRight className="w-4 h-4 text-emerald-500 shrink-0" />
+                  <span className="font-bold text-xs">1. Lending</span>
+                </div>
+                <p className="text-[10px] text-slate-500 dark:text-slate-400 leading-tight">
+                  They owe me. Outside money to receive; does not affect your present bank cash.
+                </p>
+              </button>
+
+              {/* Option 2: Borrowing */}
+              <button
+                type="button"
+                onClick={() => setLedgerType('BORROWING')}
+                className={`p-3 rounded-xl border text-left transition-all cursor-pointer flex flex-col justify-between ${
+                  ledgerType === 'BORROWING'
+                    ? 'border-rose-500 bg-rose-500/10 text-rose-900 dark:text-rose-200 ring-2 ring-rose-500/30'
+                    : 'border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-800/60 text-slate-700 dark:text-slate-300 hover:border-slate-300 dark:hover:border-slate-700'
+                }`}
+              >
+                <div className="flex items-center gap-1.5 mb-1">
+                  <ArrowDownLeft className="w-4 h-4 text-rose-500 shrink-0" />
+                  <span className="font-bold text-xs">2. Borrowing</span>
+                </div>
+                <p className="text-[10px] text-slate-500 dark:text-slate-400 leading-tight">
+                  I owe them. Personal debt to repay; money was already spent and not sitting in your account.
+                </p>
+              </button>
+
+              {/* Option 3: Custodial / Storing for them */}
+              <button
+                type="button"
+                onClick={() => setLedgerType('CUSTODIAL')}
+                className={`p-3 rounded-xl border text-left transition-all cursor-pointer flex flex-col justify-between ${
+                  ledgerType === 'CUSTODIAL'
+                    ? 'border-amber-500 bg-amber-500/10 text-amber-900 dark:text-amber-200 ring-2 ring-amber-500/30'
+                    : 'border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-800/60 text-slate-700 dark:text-slate-300 hover:border-slate-300 dark:hover:border-slate-700'
+                }`}
+              >
+                <div className="flex items-center gap-1.5 mb-1">
+                  <ShieldCheck className="w-4 h-4 text-amber-500 shrink-0" />
+                  <span className="font-bold text-xs">3. Storing / Holding</span>
+                </div>
+                <p className="text-[10px] text-slate-500 dark:text-slate-400 leading-tight">
+                  Holding their funds in my account (e.g. IPO/Investments); unspent portion is held cash.
+                </p>
+              </button>
+            </div>
+          </div>
 
           <div>
             <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-300 mb-1.5">

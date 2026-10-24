@@ -347,6 +347,7 @@ export function summarizePerson(
     personName: person.name,
     nickname: person.nickname,
     color: person.color,
+    ledgerType: person.ledgerType || 'LENDING',
     isArchived: Boolean(person.isArchived),
     shareToken: person.shareToken,
     isSharingEnabled: Boolean(person.isSharingEnabled),

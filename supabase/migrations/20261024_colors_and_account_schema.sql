@@ -3,9 +3,12 @@
 -- Execute this script in your Supabase SQL Editor (Dashboard -> SQL Editor)
 -- ==============================================================================
 
--- 1. ADD COLOR COLUMN TO PEOPLE TABLE (If not already present)
+-- 1. ADD COLOR & LEDGER_TYPE COLUMNS TO PEOPLE TABLE
 alter table public.people 
 add column if not exists color text not null default 'default';
+
+alter table public.people 
+add column if not exists ledger_type text not null default 'LENDING' check (ledger_type in ('LENDING', 'BORROWING', 'CUSTODIAL'));
 
 -- 2. UPDATE ADJUSTMENT_DIRECTION CHECK CONSTRAINT
 -- Adds 'CREDITED_TO_ACCOUNT' and 'DEBITED_FROM_ACCOUNT' to public.transactions

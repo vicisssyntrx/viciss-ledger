@@ -35,6 +35,7 @@ export async function POST(req: NextRequest) {
       name: body.name,
       nickname: body.nickname,
       color: body.color,
+      ledgerType: body.ledgerType,
       phone: body.phone,
       email: body.email,
       notes: body.notes,
