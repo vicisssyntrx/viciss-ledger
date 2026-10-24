@@ -653,3 +653,56 @@ export async function importData(backup: {
     transactionCount: backup.transactions.length,
   };
 }
+
+export async function getPersonalAccountSettingsDb() {
+  const supabase = getSupabase();
+  if (supabase) {
+    try {
+      const { data, error } = await supabase
+        .from('personal_account_settings')
+        .select('*')
+        .eq('id', 'primary')
+        .single();
+
+      if (!error && data) {
+        return {
+          initialBalancePaise: Number(data.initial_balance_paise || 0),
+          manualAdjustmentsPaise: Number(data.manual_adjustments_paise || 0),
+          history: Array.isArray(data.history) ? data.history : [],
+        };
+      }
+    } catch (e) {
+      console.warn('Could not read personal_account_settings from Supabase, using storage:', e);
+    }
+  }
+
+  const { getPersonalAccountSettings } = await import('./storage');
+  return getPersonalAccountSettings();
+}
+
+export async function savePersonalAccountSettingsDb(settings: {
+  initialBalancePaise: number;
+  manualAdjustmentsPaise: number;
+  history: any[];
+}) {
+  const { savePersonalAccountSettings } = await import('./storage');
+  savePersonalAccountSettings(settings);
+
+  const supabase = getSupabase();
+  if (supabase) {
+    try {
+      await supabase
+        .from('personal_account_settings')
+        .upsert({
+          id: 'primary',
+          initial_balance_paise: settings.initialBalancePaise,
+          manual_adjustments_paise: settings.manualAdjustmentsPaise,
+          history: settings.history,
+          updated_at: new Date().toISOString(),
+        });
+    } catch (e) {
+      console.warn('Could not save personal_account_settings to Supabase:', e);
+    }
+  }
+}
+

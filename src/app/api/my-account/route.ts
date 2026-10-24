@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getPeople, getTransactions } from '@/lib/db';
 import {
-  getPersonalAccountSettings,
-  savePersonalAccountSettings,
-  PersonalAccountSettings,
-} from '@/lib/db/storage';
+  getPeople,
+  getTransactions,
+  getPersonalAccountSettingsDb,
+  savePersonalAccountSettingsDb,
+} from '@/lib/db';
 import { rupeesToPaise } from '@/lib/accounting/currency';
 
 export async function GET() {
@@ -14,7 +14,7 @@ export async function GET() {
       getTransactions(),
     ]);
 
-    const settings = getPersonalAccountSettings();
+    const settings = await getPersonalAccountSettingsDb();
 
     // 1. Total money others gave me (Cash in my bank/hand held on their behalf)
     // GIVE_MONEY means I gave them money -> Outflow from my account
@@ -161,7 +161,7 @@ export async function GET() {
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const settings = getPersonalAccountSettings();
+    const settings = await getPersonalAccountSettingsDb();
 
     if (body.action === 'SET_INITIAL') {
       const amountPaise = rupeesToPaise(body.amountRupees);
@@ -173,7 +173,7 @@ export async function POST(req: NextRequest) {
         description: body.description?.trim() || 'Updated base personal funds',
         createdAt: new Date().toISOString(),
       });
-      savePersonalAccountSettings(settings);
+      await savePersonalAccountSettingsDb(settings);
       return NextResponse.json({ success: true, settings });
     }
 
@@ -192,7 +192,7 @@ export async function POST(req: NextRequest) {
         description: body.description?.trim() || (body.action === 'CREDIT' ? 'Manual Credit to My Funds' : 'Manual Debit from My Funds'),
         createdAt: new Date().toISOString(),
       });
-      savePersonalAccountSettings(settings);
+      await savePersonalAccountSettingsDb(settings);
       return NextResponse.json({ success: true, settings });
     }
 
@@ -209,7 +209,7 @@ export async function POST(req: NextRequest) {
           createdAt: new Date().toISOString(),
         },
       ] : [];
-      savePersonalAccountSettings(settings);
+      await savePersonalAccountSettingsDb(settings);
       return NextResponse.json({ success: true, settings });
     }
 
