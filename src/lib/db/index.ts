@@ -2,7 +2,7 @@ import crypto from 'crypto';
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { Person, Transaction } from '../accounting/types';
 import { calculateBalanceEffectPaise, calculateTotalBalancePaise } from '../accounting/engine';
-import { readDatabase, writeDatabase, generateSecureToken } from './storage';
+import { readDatabase, writeDatabase, generateSecureToken, getPersonColors, savePersonColor } from './storage';
 
 export const isSupabaseConfigured = (): boolean => {
   return Boolean(
@@ -21,12 +21,14 @@ function getSupabase(): SupabaseClient | null {
 }
 
 function mapPersonFromDb(row: any): Person {
+  const storedColors = getPersonColors();
+  const resolvedColor = row.color || storedColors[row.id] || 'default';
   return {
     id: row.id,
     ownerId: row.owner_id || 'default-owner',
     name: row.name,
     nickname: row.nickname || undefined,
-    color: row.color || 'default',
+    color: resolvedColor,
     phone: row.phone || undefined,
     email: row.email || undefined,
     notes: row.notes || undefined,
@@ -141,10 +143,11 @@ export async function createPerson(data: {
     if (error) {
       console.error('Supabase createPerson error, falling back to local DB:', error);
     } else if (inserted) {
-      const res = mapPersonFromDb(inserted);
-      if (!res.color || res.color === 'default') {
-        res.color = chosenColor;
+      if (chosenColor) {
+        savePersonColor(inserted.id, chosenColor);
       }
+      const res = mapPersonFromDb(inserted);
+      res.color = chosenColor;
       return res;
     }
   }
@@ -168,6 +171,10 @@ export async function createPerson(data: {
     updatedAt: now,
   };
 
+  if (chosenColor) {
+    savePersonColor(newPerson.id, chosenColor);
+  }
+
   db.people.push(newPerson);
   writeDatabase(db);
   return newPerson;
@@ -177,6 +184,10 @@ export async function updatePerson(
   id: string,
   updates: Partial<Omit<Person, 'id' | 'ownerId' | 'createdAt'>>
 ): Promise<Person> {
+  if (updates.color) {
+    savePersonColor(id, updates.color);
+  }
+
   const supabase = getSupabase();
   let supabaseResult: Person | null = null;
 
@@ -204,7 +215,7 @@ export async function updatePerson(
     }
     if (!error && data) {
       supabaseResult = mapPersonFromDb(data);
-      if (updates.color && (!supabaseResult.color || supabaseResult.color === 'default')) {
+      if (updates.color) {
         supabaseResult.color = updates.color;
       }
     }

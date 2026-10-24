@@ -90,8 +90,9 @@ export function PersonModal({
         notes: notes.trim() || undefined,
       };
 
-      const url = personToEdit ? `/api/people/${personToEdit.id}` : '/api/people';
-      const method = personToEdit ? 'PATCH' : 'POST';
+      const targetId = personToEdit?.id || (personToEdit as any)?.personId;
+      const url = targetId ? `/api/people/${targetId}` : '/api/people';
+      const method = targetId ? 'PATCH' : 'POST';
 
       const res = await fetch(url, {
         method,

@@ -266,3 +266,51 @@ export function generateSecureToken(): string {
   return `vcs_${crypto.randomBytes(24).toString('hex')}`;
 }
 
+export function getPersonColors(): Record<string, string> {
+  const { dataDir } = getStoragePaths();
+  const colorsFile = path.join(dataDir, 'person_colors.json');
+  try {
+    if (fs.existsSync(colorsFile)) {
+      const raw = fs.readFileSync(colorsFile, 'utf-8');
+      return JSON.parse(raw);
+    }
+  } catch (err) {
+    console.error('Error reading person colors file:', err);
+  }
+  // Also check os.tmpdir fallback
+  try {
+    const tmpFile = path.join(os.tmpdir(), '.viciss_data', 'person_colors.json');
+    if (fs.existsSync(tmpFile)) {
+      const raw = fs.readFileSync(tmpFile, 'utf-8');
+      return JSON.parse(raw);
+    }
+  } catch (e) {
+    // ignore
+  }
+  return {};
+}
+
+export function savePersonColor(personId: string, color: string): void {
+  const { dataDir } = getStoragePaths();
+  const colors = getPersonColors();
+  colors[personId] = color;
+
+  const writeColors = (targetDir: string) => {
+    if (!fs.existsSync(targetDir)) {
+      fs.mkdirSync(targetDir, { recursive: true });
+    }
+    const colorsFile = path.join(targetDir, 'person_colors.json');
+    fs.writeFileSync(colorsFile, JSON.stringify(colors, null, 2), 'utf-8');
+  };
+
+  try {
+    writeColors(dataDir);
+  } catch (err) {
+    try {
+      writeColors(path.join(os.tmpdir(), '.viciss_data'));
+    } catch (e) {
+      console.error('Failed to write person colors:', e);
+    }
+  }
+}
+
