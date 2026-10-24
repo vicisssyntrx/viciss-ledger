@@ -123,7 +123,7 @@ export function calculateBalanceEffectPaise(tx: {
 
     case 'ADJUSTMENT': {
       const direction = tx.adjustmentDirection || 'INCREASE_OWED_TO_ME';
-      if (direction === 'INCREASE_OWED_TO_ME') {
+      if (direction === 'INCREASE_OWED_TO_ME' || direction === 'CREDITED_TO_ACCOUNT') {
         return amount;
       }
       return -amount;

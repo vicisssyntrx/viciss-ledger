@@ -28,8 +28,10 @@ export type RepaymentDirection =
   | 'THEY_REPAY_ME';  // Decreases debt they owe me (+amount effect)
 
 export type AdjustmentDirection =
-  | 'INCREASE_OWED_TO_ME' // +amount effect
-  | 'DECREASE_OWED_TO_ME'; // -amount effect
+  | 'INCREASE_OWED_TO_ME'   // +amount effect
+  | 'DECREASE_OWED_TO_ME'   // -amount effect
+  | 'CREDITED_TO_ACCOUNT'   // Credited to my account (+amount effect)
+  | 'DEBITED_FROM_ACCOUNT'; // Debited from my account (-amount effect)
 
 export interface SharedSplitParticipant {
   personId: string;

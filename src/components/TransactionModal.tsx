@@ -575,14 +575,14 @@ export function TransactionModal({
               <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300">
                 Adjustment Direction
               </label>
-              <div className="grid grid-cols-2 gap-2 text-xs">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
                 <button
                   type="button"
                   onClick={() => setAdjustmentDirection('INCREASE_OWED_TO_ME')}
                   className={`p-2.5 rounded-lg border text-left font-medium transition-colors ${
                     adjustmentDirection === 'INCREASE_OWED_TO_ME'
-                      ? 'border-emerald-600 bg-white dark:bg-slate-800 text-emerald-700 dark:text-emerald-400 font-semibold'
-                      : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'
+                      ? 'border-emerald-600 bg-white dark:bg-slate-800 text-emerald-700 dark:text-emerald-400 font-semibold shadow-xs'
+                      : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'
                   }`}
                 >
                   Increase money owed to me (+₹)
@@ -592,11 +592,33 @@ export function TransactionModal({
                   onClick={() => setAdjustmentDirection('DECREASE_OWED_TO_ME')}
                   className={`p-2.5 rounded-lg border text-left font-medium transition-colors ${
                     adjustmentDirection === 'DECREASE_OWED_TO_ME'
-                      ? 'border-rose-600 bg-white dark:bg-slate-800 text-rose-700 dark:text-rose-400 font-semibold'
-                      : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'
+                      ? 'border-rose-600 bg-white dark:bg-slate-800 text-rose-700 dark:text-rose-400 font-semibold shadow-xs'
+                      : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'
                   }`}
                 >
                   Decrease money owed to me (-₹)
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setAdjustmentDirection('CREDITED_TO_ACCOUNT')}
+                  className={`p-2.5 rounded-lg border text-left font-medium transition-colors ${
+                    adjustmentDirection === 'CREDITED_TO_ACCOUNT'
+                      ? 'border-emerald-600 bg-white dark:bg-slate-800 text-emerald-700 dark:text-emerald-400 font-semibold shadow-xs'
+                      : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'
+                  }`}
+                >
+                  Credited to my account (+₹)
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setAdjustmentDirection('DEBITED_FROM_ACCOUNT')}
+                  className={`p-2.5 rounded-lg border text-left font-medium transition-colors ${
+                    adjustmentDirection === 'DEBITED_FROM_ACCOUNT'
+                      ? 'border-rose-600 bg-white dark:bg-slate-800 text-rose-700 dark:text-rose-400 font-semibold shadow-xs'
+                      : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'
+                  }`}
+                >
+                  Debited from my account (-₹)
                 </button>
               </div>
             </div>
