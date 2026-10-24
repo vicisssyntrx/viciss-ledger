@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, Suspense } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import {
@@ -29,7 +29,7 @@ import { Person, PersonSummary } from '@/lib/accounting/types';
 import { formatINR } from '@/lib/accounting/currency';
 import { getCardTheme } from '@/lib/accounting/cardColors';
 
-export default function PeoplePage() {
+function PeopleContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const typeParam = searchParams.get('type') as 'LENDING' | 'BORROWING' | 'CUSTODIAL' | null;
@@ -492,5 +492,19 @@ export default function PeoplePage() {
         />
       )}
     </div>
+  );
+}
+
+export default function PeoplePage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex min-h-screen bg-slate-50 dark:bg-slate-950 items-center justify-center">
+          <div className="text-sm text-slate-400">Loading Directory...</div>
+        </div>
+      }
+    >
+      <PeopleContent />
+    </Suspense>
   );
 }
