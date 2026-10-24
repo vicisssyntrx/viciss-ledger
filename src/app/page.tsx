@@ -21,6 +21,8 @@ import {
   ArrowDownLeft,
   Receipt,
   RotateCcw,
+  Landmark,
+  ShieldCheck,
 } from 'lucide-react';
 import { Navigation } from '@/components/Navigation';
 import { TransactionModal } from '@/components/TransactionModal';
@@ -121,50 +123,66 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        {/* 4 Core Summary Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+        {/* 5 Core Summary Cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3.5 sm:gap-4 mb-8">
           {/* Card 1: Money Owed to Me */}
-          <div className="p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-2xs">
+          <div className="p-4 sm:p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-2xs">
             <div className="flex items-center justify-between text-slate-500 dark:text-slate-400 mb-2">
-              <span className="text-xs font-semibold uppercase tracking-wider">Money Owed to Me</span>
+              <span className="text-[11px] sm:text-xs font-semibold uppercase tracking-wider">Money Owed to Me</span>
               <div className="p-1.5 rounded-lg bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 border border-emerald-200/40">
-                <TrendingUp className="w-4 h-4" />
+                <TrendingUp className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
               </div>
             </div>
-            <div className="text-2xl sm:text-3xl font-extrabold tracking-tight text-emerald-600 dark:text-emerald-400">
+            <div className="text-xl sm:text-2xl lg:text-3xl font-extrabold tracking-tight text-emerald-600 dark:text-emerald-400">
               {summary ? summary.formattedMoneyOwedToMe : '₹0.00'}
             </div>
-            <p className="text-[11px] text-slate-400 dark:text-slate-500 mt-2">
-              Total positive balances owed to you across people
+            <p className="text-[10px] sm:text-[11px] text-slate-400 dark:text-slate-500 mt-2">
+              Receivables: Lent out to others
             </p>
           </div>
 
           {/* Card 2: Money I Owe */}
-          <div className="p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-2xs">
+          <div className="p-4 sm:p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-2xs">
             <div className="flex items-center justify-between text-slate-500 dark:text-slate-400 mb-2">
-              <span className="text-xs font-semibold uppercase tracking-wider">Money I Owe</span>
+              <span className="text-[11px] sm:text-xs font-semibold uppercase tracking-wider">Money I Owe</span>
               <div className="p-1.5 rounded-lg bg-rose-50 dark:bg-rose-950/60 text-rose-600 dark:text-rose-400 border border-rose-200/40">
-                <TrendingDown className="w-4 h-4" />
+                <TrendingDown className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
               </div>
             </div>
-            <div className="text-2xl sm:text-3xl font-extrabold tracking-tight text-rose-600 dark:text-rose-400">
+            <div className="text-xl sm:text-2xl lg:text-3xl font-extrabold tracking-tight text-rose-600 dark:text-rose-400">
               {summary ? summary.formattedMoneyIOwe : '₹0.00'}
             </div>
-            <p className="text-[11px] text-slate-400 dark:text-slate-500 mt-2">
-              Total liabilities you owe to others
+            <p className="text-[10px] sm:text-[11px] text-slate-400 dark:text-slate-500 mt-2">
+              Liabilities: Borrowed from others
             </p>
           </div>
 
-          {/* Card 3: Net Balance */}
-          <div className="p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-2xs">
+          {/* Card 3: Funds Held for Others (Custodial) */}
+          <div className="p-4 sm:p-5 rounded-2xl bg-white dark:bg-slate-900 border border-amber-200/60 dark:border-amber-900/40 shadow-2xs">
             <div className="flex items-center justify-between text-slate-500 dark:text-slate-400 mb-2">
-              <span className="text-xs font-semibold uppercase tracking-wider">Net Balance</span>
+              <span className="text-[11px] sm:text-xs font-semibold uppercase tracking-wider">Funds Held</span>
+              <div className="p-1.5 rounded-lg bg-amber-50 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400 border border-amber-200/40">
+                <Landmark className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+              </div>
+            </div>
+            <div className="text-xl sm:text-2xl lg:text-3xl font-extrabold tracking-tight text-amber-600 dark:text-amber-400">
+              {summary ? summary.formattedCustodialFundsHeld : '₹0.00'}
+            </div>
+            <p className="text-[10px] sm:text-[11px] text-slate-400 dark:text-slate-500 mt-2">
+              Custodial: Held in trust for others
+            </p>
+          </div>
+
+          {/* Card 4: Net Balance */}
+          <div className="p-4 sm:p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-2xs">
+            <div className="flex items-center justify-between text-slate-500 dark:text-slate-400 mb-2">
+              <span className="text-[11px] sm:text-xs font-semibold uppercase tracking-wider">Net Balance</span>
               <div className="p-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">
-                <Scale className="w-4 h-4" />
+                <Scale className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
               </div>
             </div>
             <div
-              className={`text-2xl sm:text-3xl font-extrabold tracking-tight ${
+              className={`text-xl sm:text-2xl lg:text-3xl font-extrabold tracking-tight ${
                 (summary?.netBalancePaise ?? 0) > 0
                   ? 'text-emerald-600 dark:text-emerald-400'
                   : (summary?.netBalancePaise ?? 0) < 0
@@ -174,24 +192,24 @@ export default function DashboardPage() {
             >
               {summary ? summary.formattedNetBalance : '₹0.00'}
             </div>
-            <p className="text-[11px] text-slate-400 dark:text-slate-500 mt-2">
+            <p className="text-[10px] sm:text-[11px] text-slate-400 dark:text-slate-500 mt-2">
               Owed to me − Money I owe
             </p>
           </div>
 
-          {/* Card 4: Total People */}
-          <div className="p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-2xs">
+          {/* Card 5: Total People */}
+          <div className="p-4 sm:p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-2xs">
             <div className="flex items-center justify-between text-slate-500 dark:text-slate-400 mb-2">
-              <span className="text-xs font-semibold uppercase tracking-wider">Active People</span>
+              <span className="text-[11px] sm:text-xs font-semibold uppercase tracking-wider">Active People</span>
               <div className="p-1.5 rounded-lg bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 border border-indigo-200/40">
-                <Users className="w-4 h-4" />
+                <Users className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
               </div>
             </div>
-            <div className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">
+            <div className="text-xl sm:text-2xl lg:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">
               {summary ? summary.totalActivePeople : 0}
             </div>
-            <p className="text-[11px] text-slate-400 dark:text-slate-500 mt-2">
-              People with dedicated ledgers in your workspace
+            <p className="text-[10px] sm:text-[11px] text-slate-400 dark:text-slate-500 mt-2">
+              Dedicated ledgers in workspace
             </p>
           </div>
         </div>

@@ -131,10 +131,12 @@ export interface PersonSummary {
 export interface DashboardSummary {
   moneyOwedToMePaise: number; // Sum of all positive balances
   moneyIOwePaise: number;     // Sum of absolute values of all negative balances
+  custodialFundsHeldPaise: number; // Funds held for others in custody / storage
   netBalancePaise: number;     // moneyOwedToMe - moneyIOwe
   totalActivePeople: number;
   formattedMoneyOwedToMe: string;
   formattedMoneyIOwe: string;
+  formattedCustodialFundsHeld: string;
   formattedNetBalance: string;
   netStatus: BalanceStatus;
 }

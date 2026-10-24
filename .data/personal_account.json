@@ -1,5 +1,20 @@
 {
-  "initialBalancePaise": 0,
-  "manualAdjustmentsPaise": 0,
-  "history": []
+  "initialBalancePaise": 650000,
+  "manualAdjustmentsPaise": 44400,
+  "history": [
+    {
+      "id": "adj-1792826894322",
+      "type": "CREDIT",
+      "amountPaise": 44400,
+      "description": "Manual Credit to My Funds",
+      "createdAt": "2026-10-24T07:28:14.322Z"
+    },
+    {
+      "id": "adj-1792826887209",
+      "type": "SET",
+      "amountPaise": 650000,
+      "description": "Updated personal baseline funds",
+      "createdAt": "2026-10-24T07:28:07.209Z"
+    }
+  ]
 }

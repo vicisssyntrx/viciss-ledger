@@ -384,10 +384,19 @@ export function summarizeDashboard(
   
   let moneyOwedToMePaise = 0;
   let moneyIOwePaise = 0;
+  let custodialFundsHeldPaise = 0;
 
   for (const person of activePeople) {
     const personTxs = transactions.filter((t) => t.personId === person.id);
     const balance = calculateTotalBalancePaise(personTxs);
+    const ledgerType = person.ledgerType || 'LENDING';
+
+    if (ledgerType === 'CUSTODIAL') {
+      // In custodial accounts, if balance < 0 (i.e. I owe them their unspent deposit), that is funds held for them
+      if (balance < 0) {
+        custodialFundsHeldPaise += Math.abs(balance);
+      }
+    }
 
     if (balance > 0) {
       moneyOwedToMePaise += balance;
@@ -402,10 +411,12 @@ export function summarizeDashboard(
   return {
     moneyOwedToMePaise,
     moneyIOwePaise,
+    custodialFundsHeldPaise,
     netBalancePaise,
     totalActivePeople: activePeople.length,
     formattedMoneyOwedToMe: formatINR(moneyOwedToMePaise),
     formattedMoneyIOwe: formatINR(moneyIOwePaise),
+    formattedCustodialFundsHeld: formatINR(custodialFundsHeldPaise),
     formattedNetBalance: formatINR(netBalancePaise),
     netStatus,
   };
