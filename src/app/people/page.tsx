@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import {
   Users,
   UserPlus,
@@ -16,6 +16,9 @@ import {
   Mail,
   ChevronRight,
   ShieldAlert,
+  HandCoins,
+  Landmark,
+  ShieldCheck,
 } from 'lucide-react';
 import { Navigation } from '@/components/Navigation';
 import { PersonModal } from '@/components/PersonModal';
@@ -28,11 +31,23 @@ import { getCardTheme } from '@/lib/accounting/cardColors';
 
 export default function PeoplePage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const typeParam = searchParams.get('type') as 'LENDING' | 'BORROWING' | 'CUSTODIAL' | null;
+
   const [people, setPeople] = useState<PersonSummary[]>([]);
   const [rawPeople, setRawPeople] = useState<Person[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [activeTab, setActiveTab] = useState<'active' | 'archived'>('active');
+  const [selectedRelationship, setSelectedRelationship] = useState<'ALL' | 'LENDING' | 'BORROWING' | 'CUSTODIAL'>(
+    typeParam || 'ALL'
+  );
+
+  useEffect(() => {
+    if (typeParam) {
+      setSelectedRelationship(typeParam);
+    }
+  }, [typeParam]);
 
   // Modals
   const [isAddPersonOpen, setIsAddPersonOpen] = useState(false);
@@ -95,6 +110,10 @@ export default function PeoplePage() {
     if (activeTab === 'active' && isArchived) return false;
     if (activeTab === 'archived' && !isArchived) return false;
 
+    // Filter by relationship category (LENDING, BORROWING, CUSTODIAL)
+    const personLedgerType = p.ledgerType || raw?.ledgerType || 'LENDING';
+    if (selectedRelationship !== 'ALL' && personLedgerType !== selectedRelationship) return false;
+
     const q = searchQuery.toLowerCase().trim();
     if (!q) return true;
     return (
@@ -121,7 +140,7 @@ export default function PeoplePage() {
               People Directory
             </h1>
             <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-0.5 sm:mt-1">
-              Manage individual ledgers, sharing preferences, and personal balances.
+              Manage individual ledgers, classification (Receivables, Liabilities, Custodial), and balances.
             </p>
           </div>
 
@@ -137,6 +156,46 @@ export default function PeoplePage() {
           </button>
         </div>
 
+        {/* Ledger Categories Pills */}
+        <div className="flex items-center gap-2 overflow-x-auto pb-2 mb-4 scrollbar-none">
+          {[
+            { id: 'ALL', label: 'All Ledgers', count: people.length },
+            { 
+              id: 'LENDING', 
+              label: 'Receivables (Lent Out)', 
+              count: people.filter(p => (p.ledgerType || rawPeople.find(rp => rp.id === p.personId || (rp as any).personId === p.personId)?.ledgerType || 'LENDING') === 'LENDING').length 
+            },
+            { 
+              id: 'BORROWING', 
+              label: 'Liabilities (Borrowed)', 
+              count: people.filter(p => (p.ledgerType || rawPeople.find(rp => rp.id === p.personId || (rp as any).personId === p.personId)?.ledgerType) === 'BORROWING').length 
+            },
+            { 
+              id: 'CUSTODIAL', 
+              label: 'Custodial (Funds Held)', 
+              count: people.filter(p => (p.ledgerType || rawPeople.find(rp => rp.id === p.personId || (rp as any).personId === p.personId)?.ledgerType) === 'CUSTODIAL').length 
+            },
+          ].map((cat) => {
+            const isSelected = selectedRelationship === cat.id;
+            return (
+              <button
+                key={cat.id}
+                onClick={() => {
+                  setSelectedRelationship(cat.id as any);
+                  router.push(cat.id === 'ALL' ? '/people' : `/people?type=${cat.id}`);
+                }}
+                className={`px-3 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap cursor-pointer transition-all border ${
+                  isSelected
+                    ? 'bg-amber-600 text-white border-amber-500 shadow-sm'
+                    : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800'
+                }`}
+              >
+                {cat.label} <span className={`ml-1 text-[11px] px-1.5 py-0.2 rounded-full ${isSelected ? 'bg-amber-700/60 text-amber-100' : 'bg-slate-100 dark:bg-slate-800 text-slate-500'}`}>{cat.count}</span>
+              </button>
+            );
+          })}
+        </div>
+
         {/* Filter and Tabs */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
           <div className="flex items-center gap-1 p-1 rounded-xl bg-slate-200/80 dark:bg-slate-800/80 w-fit">
@@ -148,7 +207,7 @@ export default function PeoplePage() {
                   : 'text-slate-600 dark:text-slate-400 hover:text-slate-900'
               }`}
             >
-              Active People ({people.filter((p) => !(p.isArchived ?? rawPeople.find((rp) => rp.id === p.personId || (rp as any).personId === p.personId)?.isArchived)).length})
+              Active ({people.filter((p) => !(p.isArchived ?? rawPeople.find((rp) => rp.id === p.personId || (rp as any).personId === p.personId)?.isArchived)).length})
             </button>
             <button
               onClick={() => setActiveTab('archived')}

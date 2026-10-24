@@ -21,7 +21,44 @@ import { BrandLogo } from '@/components/BrandLogo';
 export default function SettingsPage() {
   const [isExporting, setIsExporting] = useState(false);
   const [isImporting, setIsImporting] = useState(false);
+  const [isResettingBalance, setIsResettingBalance] = useState(false);
+  const [resetBaseAmount, setResetBaseAmount] = useState('17545.52');
+  const [showResetConfirm, setShowResetConfirm] = useState(false);
   const [statusMessage, setStatusMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+
+  // Handle Reset Bank Balance Calculations
+  const handleResetBankBalance = async () => {
+    try {
+      setIsResettingBalance(true);
+      setStatusMessage(null);
+      const val = parseFloat(resetBaseAmount);
+      if (isNaN(val) || val < 0) {
+        throw new Error('Please enter a valid non-negative rupee amount');
+      }
+
+      const res = await fetch('/api/my-account', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'RESET',
+          amountRupees: val,
+        }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Failed to reset bank balance');
+
+      setStatusMessage({
+        type: 'success',
+        text: `Bank balance calculations reset successfully! Baseline capital recalibrated to ₹${val.toLocaleString('en-IN', { minimumFractionDigits: 2 })}.`,
+      });
+      setShowResetConfirm(false);
+    } catch (err: any) {
+      setStatusMessage({ type: 'error', text: err.message || 'Failed to reset bank balance calculations' });
+    } finally {
+      setIsResettingBalance(false);
+    }
+  };
 
   // Handle Full JSON Backup Download
   const handleDownloadBackup = async () => {
@@ -144,6 +181,83 @@ export default function SettingsPage() {
           <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 text-xs text-slate-600 dark:text-slate-300">
             All accounting calculations strictly operate on <strong>integer paise</strong> (1 Rupee = 100 paise)
             with zero floating point representation errors.
+          </div>
+        </div>
+
+        {/* Bank Balance Calculations & Recalibration */}
+        <div className="p-6 rounded-2xl bg-white dark:bg-slate-900 border border-amber-200/60 dark:border-amber-900/40 shadow-2xs space-y-4">
+          <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
+            <div className="flex items-center gap-2.5">
+              <Database className="w-5 h-5 text-amber-600 dark:text-amber-400" />
+              <div>
+                <h2 className="text-base font-bold text-slate-900 dark:text-white">
+                  Reset Bank Balance Calculations
+                </h2>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                  Recalibrate your real-time bank balance, clear manual credit/debit adjustments, and reset base capital.
+                </p>
+              </div>
+            </div>
+            <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full bg-amber-100 dark:bg-amber-950/70 text-amber-800 dark:text-amber-300">
+              Account Control
+            </span>
+          </div>
+
+          <p className="text-xs text-slate-600 dark:text-slate-300">
+            Use this option if you need to wipe your manual credit/debit adjustments or want to reset your starting personal baseline capital. Your person ledgers and recorded transaction history will remain intact.
+          </p>
+
+          <div className="bg-slate-50 dark:bg-slate-950 p-4 rounded-xl border border-slate-200/80 dark:border-slate-800 space-y-3">
+            <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300">
+              Baseline Personal Capital (₹)
+            </label>
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+              <div className="relative flex-1">
+                <span className="absolute left-3.5 top-1/2 -translate-y-1/2 font-semibold text-slate-400 text-xs">
+                  ₹
+                </span>
+                <input
+                  type="number"
+                  step="0.01"
+                  min="0"
+                  value={resetBaseAmount}
+                  onChange={(e) => setResetBaseAmount(e.target.value)}
+                  placeholder="17545.52"
+                  className="w-full pl-8 pr-3.5 py-2.5 text-xs rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-900 dark:text-white font-mono focus:outline-none focus:ring-2 focus:ring-amber-500"
+                />
+              </div>
+
+              {!showResetConfirm ? (
+                <button
+                  type="button"
+                  onClick={() => setShowResetConfirm(true)}
+                  className="px-4 py-2.5 text-xs font-semibold rounded-xl bg-amber-600 hover:bg-amber-700 text-white transition-all cursor-pointer shadow-sm text-center"
+                >
+                  Reset Calculations
+                </button>
+              ) : (
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={handleResetBankBalance}
+                    disabled={isResettingBalance}
+                    className="px-4 py-2.5 text-xs font-semibold rounded-xl bg-rose-600 hover:bg-rose-700 text-white transition-all cursor-pointer shadow-sm disabled:opacity-50"
+                  >
+                    {isResettingBalance ? 'Resetting...' : 'Confirm Reset'}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setShowResetConfirm(false)}
+                    className="px-3 py-2.5 text-xs font-semibold rounded-xl bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-300 dark:hover:bg-slate-700 transition-all cursor-pointer"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              )}
+            </div>
+            <p className="text-[11px] text-slate-400">
+              Default starting personal money is ₹17,545.52. All active Custodial deposits will continue to be safely separated.
+            </p>
           </div>
         </div>
 

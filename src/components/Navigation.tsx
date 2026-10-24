@@ -11,6 +11,9 @@ import {
   Settings,
   PlusCircle,
   UserPlus,
+  HandCoins,
+  Landmark,
+  ShieldCheck,
   Moon,
   Sun,
   LogOut,
@@ -146,6 +149,37 @@ export function Navigation({
               );
             })}
           </nav>
+
+          {/* Account Categories Section for Easy Access */}
+          <div className="flex flex-col gap-1.5 pt-1">
+            <span className="px-3 text-[11px] font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500">
+              Ledger Categories
+            </span>
+            
+            <Link
+              href="/people?type=LENDING"
+              className="flex items-center gap-3 px-3.5 py-2 rounded-xl text-xs font-medium text-slate-600 dark:text-slate-400 hover:bg-emerald-500/10 hover:text-emerald-700 dark:hover:text-emerald-300 transition-colors"
+            >
+              <HandCoins className="w-3.5 h-3.5 text-emerald-500" />
+              <span>Receivables (Lent Out)</span>
+            </Link>
+
+            <Link
+              href="/people?type=BORROWING"
+              className="flex items-center gap-3 px-3.5 py-2 rounded-xl text-xs font-medium text-slate-600 dark:text-slate-400 hover:bg-rose-500/10 hover:text-rose-700 dark:hover:text-rose-300 transition-colors"
+            >
+              <Landmark className="w-3.5 h-3.5 text-rose-500" />
+              <span>Liabilities (Borrowed)</span>
+            </Link>
+
+            <Link
+              href="/people?type=CUSTODIAL"
+              className="flex items-center gap-3 px-3.5 py-2 rounded-xl text-xs font-medium text-slate-600 dark:text-slate-400 hover:bg-amber-500/10 hover:text-amber-700 dark:hover:text-amber-300 transition-colors"
+            >
+              <ShieldCheck className="w-3.5 h-3.5 text-amber-500" />
+              <span>Custodial (Funds Held)</span>
+            </Link>
+          </div>
         </div>
 
         {/* Footer info & Account status */}

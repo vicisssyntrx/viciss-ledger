@@ -196,6 +196,23 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ success: true, settings });
     }
 
+    if (body.action === 'RESET') {
+      const resetBasePaise = body.amountRupees !== undefined ? rupeesToPaise(body.amountRupees) : 1754552;
+      settings.initialBalancePaise = resetBasePaise;
+      settings.manualAdjustmentsPaise = 0;
+      settings.history = [
+        {
+          id: `reset-${Date.now()}`,
+          type: 'SET',
+          amountPaise: resetBasePaise,
+          description: body.description?.trim() || 'Reset bank balance calculations',
+          createdAt: new Date().toISOString(),
+        },
+      ];
+      savePersonalAccountSettings(settings);
+      return NextResponse.json({ success: true, settings });
+    }
+
     return NextResponse.json({ error: 'Invalid action' }, { status: 400 });
   } catch (error: any) {
     console.error('Error updating my-account:', error);
