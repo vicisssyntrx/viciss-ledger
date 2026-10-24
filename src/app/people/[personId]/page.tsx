@@ -220,8 +220,8 @@ function IndividualLedgerContent() {
             </div>
 
             {/* Current Net Balance Display */}
-            <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 text-left md:text-right shrink-0">
-              <span className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">
+            <div className="p-4 rounded-xl bg-black/5 dark:bg-black/25 border border-black/10 dark:border-white/10 text-left md:text-right shrink-0">
+              <span className="text-[11px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
                 Current Net Balance
               </span>
               <div
@@ -239,10 +239,10 @@ function IndividualLedgerContent() {
                 <span
                   className={`inline-block text-xs font-semibold px-2.5 py-0.5 rounded-full ${
                     isPositive
-                      ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300'
+                      ? 'bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30'
                       : isNegative
-                      ? 'bg-rose-100 text-rose-800 dark:bg-rose-950 dark:text-rose-300'
-                      : 'bg-slate-200 text-slate-700 dark:bg-slate-700 dark:text-slate-300'
+                      ? 'bg-rose-500/15 text-rose-700 dark:text-rose-300 border border-rose-500/30'
+                      : 'bg-black/5 dark:bg-white/5 text-slate-600 dark:text-slate-400'
                   }`}
                 >
                   {summary?.statusLabel || 'Settled'}

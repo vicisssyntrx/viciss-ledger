@@ -273,14 +273,14 @@ export default function PeoplePage() {
                     {(raw?.phone || raw?.email) && (
                       <div className="flex flex-wrap items-center gap-2 mb-3">
                         {raw.phone && (
-                          <span className="inline-flex items-center gap-1 text-[11px] text-slate-500 bg-slate-50 dark:bg-slate-800/80 px-2 py-0.5 rounded-md border border-slate-200/60 dark:border-slate-700">
-                            <Phone className="w-3 h-3 text-slate-400" />
+                          <span className="inline-flex items-center gap-1 text-[11px] text-slate-600 dark:text-slate-300 bg-black/5 dark:bg-white/5 px-2 py-0.5 rounded-md border border-black/10 dark:border-white/10">
+                            <Phone className="w-3 h-3 opacity-60" />
                             <span>{raw.phone}</span>
                           </span>
                         )}
                         {raw.email && (
-                          <span className="inline-flex items-center gap-1 text-[11px] text-slate-500 bg-slate-50 dark:bg-slate-800/80 px-2 py-0.5 rounded-md border border-slate-200/60 dark:border-slate-700 truncate max-w-[180px]">
-                            <Mail className="w-3 h-3 text-slate-400" />
+                          <span className="inline-flex items-center gap-1 text-[11px] text-slate-600 dark:text-slate-300 bg-black/5 dark:bg-white/5 px-2 py-0.5 rounded-md border border-black/10 dark:border-white/10 truncate max-w-[180px]">
+                            <Mail className="w-3 h-3 opacity-60" />
                             <span>{raw.email}</span>
                           </span>
                         )}
@@ -288,9 +288,9 @@ export default function PeoplePage() {
                     )}
 
                     {/* Balance Callout */}
-                    <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200/70 dark:border-slate-800 my-2">
+                    <div className="p-3 rounded-xl bg-black/5 dark:bg-black/25 border border-black/10 dark:border-white/10 my-2">
                       <div className="flex items-baseline justify-between">
-                        <span className="text-[11px] uppercase tracking-wider text-slate-400">
+                        <span className="text-[11px] uppercase tracking-wider text-slate-500 dark:text-slate-400 font-medium">
                           Net Standing
                         </span>
                         <span
@@ -299,7 +299,7 @@ export default function PeoplePage() {
                               ? 'text-emerald-600 dark:text-emerald-400'
                               : isNegative
                               ? 'text-rose-600 dark:text-rose-400'
-                              : 'text-slate-500 dark:text-slate-400'
+                              : 'text-slate-600 dark:text-slate-400'
                           }`}
                         >
                           {formatINR(person.currentBalancePaise, { absolute: true })}
@@ -309,10 +309,10 @@ export default function PeoplePage() {
                         <span
                           className={
                             isPositive
-                              ? 'text-emerald-700 dark:text-emerald-300'
+                              ? 'text-emerald-700 dark:text-emerald-400'
                               : isNegative
-                              ? 'text-rose-700 dark:text-rose-300'
-                              : 'text-slate-500'
+                              ? 'text-rose-700 dark:text-rose-400'
+                              : 'text-slate-500 dark:text-slate-400'
                           }
                         >
                           {person.statusLabel}

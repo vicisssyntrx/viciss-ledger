@@ -314,9 +314,9 @@ export default function DashboardPage() {
                         </div>
 
                         {/* Balance readout */}
-                        <div className="my-2">
+                        <div className="my-2 p-2.5 rounded-xl bg-black/5 dark:bg-black/25 border border-black/10 dark:border-white/10">
                           <div className="flex items-baseline justify-between">
-                            <span className="text-[11px] uppercase tracking-wider text-slate-400">
+                            <span className="text-[11px] uppercase tracking-wider text-slate-500 dark:text-slate-400 font-medium">
                               Current Balance
                             </span>
                             <span
@@ -325,7 +325,7 @@ export default function DashboardPage() {
                                   ? 'text-emerald-600 dark:text-emerald-400'
                                   : isNegative
                                   ? 'text-rose-600 dark:text-rose-400'
-                                  : 'text-slate-500 dark:text-slate-400'
+                                  : 'text-slate-600 dark:text-slate-400'
                               }`}
                             >
                               {formatINR(person.currentBalancePaise, { absolute: true })}
@@ -335,10 +335,10 @@ export default function DashboardPage() {
                             <span
                               className={`inline-block text-[11px] font-semibold px-2 py-0.5 rounded-md ${
                                 isPositive
-                                  ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300 border border-emerald-200/50'
+                                  ? 'bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30'
                                   : isNegative
-                                  ? 'bg-rose-50 text-rose-700 dark:bg-rose-950/60 dark:text-rose-300 border border-rose-200/50'
-                                  : 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400'
+                                  ? 'bg-rose-500/15 text-rose-700 dark:text-rose-300 border border-rose-500/30'
+                                  : 'bg-black/5 dark:bg-white/5 text-slate-600 dark:text-slate-400'
                               }`}
                             >
                               {person.statusLabel}

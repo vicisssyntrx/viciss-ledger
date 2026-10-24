@@ -9,84 +9,84 @@ export interface CardColorTheme {
 export const CARD_COLORS: CardColorTheme[] = [
   {
     id: 'default',
-    label: 'Default Espresso',
-    hex: '#30241c',
+    label: 'Espresso',
+    hex: '#5c4838',
     cardClass:
-      'bg-white dark:bg-slate-900 border-slate-200/80 dark:border-slate-800 hover:border-amber-700/40 dark:hover:border-amber-700/50 shadow-2xs',
+      'bg-stone-50 dark:bg-stone-900 border-stone-200 dark:border-stone-800 hover:border-amber-700/50 shadow-xs',
     avatarClass:
-      'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700',
+      'bg-stone-200 dark:bg-stone-800 text-stone-800 dark:text-stone-200 border-stone-300 dark:border-stone-700',
   },
   {
     id: 'amber',
     label: 'Amber Gold',
-    hex: '#f59e0b',
+    hex: '#d97706',
     cardClass:
-      'bg-amber-50/60 dark:bg-gradient-to-br dark:from-amber-950/40 dark:via-slate-900 dark:to-amber-950/20 border-amber-300/80 dark:border-amber-500/40 hover:border-amber-500/70 shadow-amber-950/20',
+      'bg-amber-100/90 dark:bg-[#2b1f14] border-amber-300 dark:border-amber-800/80 hover:border-amber-500 shadow-xs',
     avatarClass:
-      'bg-amber-500/20 text-amber-700 dark:text-amber-300 border-amber-500/40',
+      'bg-amber-500/25 dark:bg-amber-500/30 text-amber-900 dark:text-amber-300 border-amber-400 dark:border-amber-600/50',
   },
   {
     id: 'emerald',
     label: 'Emerald Green',
-    hex: '#10b981',
+    hex: '#059669',
     cardClass:
-      'bg-emerald-50/60 dark:bg-gradient-to-br dark:from-emerald-950/40 dark:via-slate-900 dark:to-emerald-950/20 border-emerald-300/80 dark:border-emerald-500/40 hover:border-emerald-500/70 shadow-emerald-950/20',
+      'bg-emerald-100/90 dark:bg-[#132820] border-emerald-300 dark:border-emerald-800/80 hover:border-emerald-500 shadow-xs',
     avatarClass:
-      'bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 border-emerald-500/40',
+      'bg-emerald-500/25 dark:bg-emerald-500/30 text-emerald-900 dark:text-emerald-300 border-emerald-400 dark:border-emerald-600/50',
   },
   {
     id: 'blue',
     label: 'Sapphire Blue',
-    hex: '#3b82f6',
+    hex: '#2563eb',
     cardClass:
-      'bg-blue-50/60 dark:bg-gradient-to-br dark:from-blue-950/40 dark:via-slate-900 dark:to-blue-950/20 border-blue-300/80 dark:border-blue-500/40 hover:border-blue-500/70 shadow-blue-950/20',
+      'bg-blue-100/90 dark:bg-[#15233b] border-blue-300 dark:border-blue-800/80 hover:border-blue-500 shadow-xs',
     avatarClass:
-      'bg-blue-500/20 text-blue-700 dark:text-blue-300 border-blue-500/40',
+      'bg-blue-500/25 dark:bg-blue-500/30 text-blue-900 dark:text-blue-300 border-blue-400 dark:border-blue-600/50',
   },
   {
     id: 'purple',
     label: 'Royal Purple',
-    hex: '#a855f7',
+    hex: '#9333ea',
     cardClass:
-      'bg-purple-50/60 dark:bg-gradient-to-br dark:from-purple-950/40 dark:via-slate-900 dark:to-purple-950/20 border-purple-300/80 dark:border-purple-500/40 hover:border-purple-500/70 shadow-purple-950/20',
+      'bg-purple-100/90 dark:bg-[#271836] border-purple-300 dark:border-purple-800/80 hover:border-purple-500 shadow-xs',
     avatarClass:
-      'bg-purple-500/20 text-purple-700 dark:text-purple-300 border-purple-500/40',
+      'bg-purple-500/25 dark:bg-purple-500/30 text-purple-900 dark:text-purple-300 border-purple-400 dark:border-purple-600/50',
   },
   {
     id: 'rose',
     label: 'Ruby Rose',
-    hex: '#f43f5e',
+    hex: '#e11d48',
     cardClass:
-      'bg-rose-50/60 dark:bg-gradient-to-br dark:from-rose-950/40 dark:via-slate-900 dark:to-rose-950/20 border-rose-300/80 dark:border-rose-500/40 hover:border-rose-500/70 shadow-rose-950/20',
+      'bg-rose-100/90 dark:bg-[#2f1620] border-rose-300 dark:border-rose-800/80 hover:border-rose-500 shadow-xs',
     avatarClass:
-      'bg-rose-500/20 text-rose-700 dark:text-rose-300 border-rose-500/40',
+      'bg-rose-500/25 dark:bg-rose-500/30 text-rose-900 dark:text-rose-300 border-rose-400 dark:border-rose-600/50',
   },
   {
     id: 'cyan',
     label: 'Cyan Teal',
-    hex: '#06b6d4',
+    hex: '#0891b2',
     cardClass:
-      'bg-cyan-50/60 dark:bg-gradient-to-br dark:from-cyan-950/40 dark:via-slate-900 dark:to-cyan-950/20 border-cyan-300/80 dark:border-cyan-500/40 hover:border-cyan-500/70 shadow-cyan-950/20',
+      'bg-cyan-100/90 dark:bg-[#12282e] border-cyan-300 dark:border-cyan-800/80 hover:border-cyan-500 shadow-xs',
     avatarClass:
-      'bg-cyan-500/20 text-cyan-700 dark:text-cyan-300 border-cyan-500/40',
+      'bg-cyan-500/25 dark:bg-cyan-500/30 text-cyan-900 dark:text-cyan-300 border-cyan-400 dark:border-cyan-600/50',
   },
   {
     id: 'orange',
     label: 'Vibrant Coral',
-    hex: '#f97316',
+    hex: '#ea580c',
     cardClass:
-      'bg-orange-50/60 dark:bg-gradient-to-br dark:from-orange-950/40 dark:via-slate-900 dark:to-orange-950/20 border-orange-300/80 dark:border-orange-500/40 hover:border-orange-500/70 shadow-orange-950/20',
+      'bg-orange-100/90 dark:bg-[#2d1b13] border-orange-300 dark:border-orange-800/80 hover:border-orange-500 shadow-xs',
     avatarClass:
-      'bg-orange-500/20 text-orange-700 dark:text-orange-300 border-orange-500/40',
+      'bg-orange-500/25 dark:bg-orange-500/30 text-orange-900 dark:text-orange-300 border-orange-400 dark:border-orange-600/50',
   },
   {
     id: 'bronze',
     label: 'Warm Bronze',
-    hex: '#ad8366',
+    hex: '#92400e',
     cardClass:
-      'bg-amber-900/10 dark:bg-gradient-to-br dark:from-amber-950/50 dark:via-slate-900 dark:to-[#322319]/40 border-[#ad8366]/40 hover:border-[#ad8366]/70 shadow-amber-950/30',
+      'bg-[#f5ebe1] dark:bg-[#261d18] border-[#dfcbba] dark:border-[#523d30] hover:border-[#ad8366] shadow-xs',
     avatarClass:
-      'bg-[#ad8366]/20 text-[#8c6449] dark:text-[#e5d1c2] border-[#ad8366]/40',
+      'bg-[#ad8366]/25 dark:bg-[#ad8366]/30 text-[#684126] dark:text-[#f3dfce] border-[#ad8366]/50',
   },
 ];
 
