@@ -1,0 +1,13 @@
+{
+  "initialBalancePaise": 0,
+  "manualAdjustmentsPaise": 0,
+  "history": [
+    {
+      "id": "reset-1792825231852",
+      "type": "SET",
+      "amountPaise": 0,
+      "description": "Reset bank balance calculations",
+      "createdAt": "2026-10-24T07:00:31.852Z"
+    }
+  ]
+}

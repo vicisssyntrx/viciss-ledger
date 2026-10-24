@@ -14,6 +14,7 @@ import {
   FileSpreadsheet,
   Layers,
   HelpCircle,
+  Trash2,
 } from 'lucide-react';
 import { Navigation } from '@/components/Navigation';
 import { BrandLogo } from '@/components/BrandLogo';
@@ -57,6 +58,51 @@ export default function SettingsPage() {
       setStatusMessage({ type: 'error', text: err.message || 'Failed to reset bank balance calculations' });
     } finally {
       setIsResettingBalance(false);
+    }
+  };
+
+  const [isWipingAll, setIsWipingAll] = useState(false);
+  const [showWipeConfirm, setShowWipeConfirm] = useState(false);
+
+  // Handle Wipe All Data (Fresh Start)
+  const handleWipeAllData = async () => {
+    try {
+      setIsWipingAll(true);
+      setStatusMessage(null);
+      const res = await fetch('/api/backup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          people: [],
+          transactions: [],
+        }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Failed to wipe data');
+
+      // Also reset personal account baseline to default
+      await fetch('/api/my-account', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'RESET',
+          amountRupees: 17545.52,
+        }),
+      });
+
+      setStatusMessage({
+        type: 'success',
+        text: 'All ledgers and transactions wiped cleanly! Clean slate ready for adding fresh records.',
+      });
+      setShowWipeConfirm(false);
+      setTimeout(() => {
+        window.location.href = '/';
+      }, 1500);
+    } catch (err: any) {
+      setStatusMessage({ type: 'error', text: err.message || 'Failed to wipe data' });
+    } finally {
+      setIsWipingAll(false);
     }
   };
 
@@ -296,6 +342,62 @@ export default function SettingsPage() {
               />
             </label>
           </div>
+        </div>
+
+        {/* Danger Zone: Reset All Ledgers & Data */}
+        <div className="p-6 rounded-2xl bg-white dark:bg-slate-900 border border-rose-200/80 dark:border-rose-900/50 shadow-2xs space-y-4">
+          <div className="flex items-center justify-between pb-3 border-b border-rose-100 dark:border-rose-950/60">
+            <div className="flex items-center gap-2.5">
+              <Trash2 className="w-5 h-5 text-rose-600 dark:text-rose-400" />
+              <div>
+                <h2 className="text-base font-bold text-slate-900 dark:text-white">
+                  Reset All Data (Clean Slate)
+                </h2>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                  Permanently wipe all people, transactions, and manual adjustments to start completely fresh.
+                </p>
+              </div>
+            </div>
+            <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full bg-rose-100 dark:bg-rose-950/70 text-rose-800 dark:text-rose-300">
+              Danger Zone
+            </span>
+          </div>
+
+          <p className="text-xs text-slate-600 dark:text-slate-300">
+            Use this button whenever you want to wipe all test records and historical data from the live published application and your workspace, letting you re-enter your ledgers from scratch.
+          </p>
+
+          {!showWipeConfirm ? (
+            <button
+              onClick={() => setShowWipeConfirm(true)}
+              className="px-4 py-2.5 text-xs font-semibold rounded-xl bg-rose-50 hover:bg-rose-100 dark:bg-rose-950/40 dark:hover:bg-rose-950/80 text-rose-600 dark:text-rose-300 border border-rose-200 dark:border-rose-800 transition-all cursor-pointer flex items-center gap-2"
+            >
+              <Trash2 className="w-4 h-4 text-rose-500" />
+              <span>Reset & Wipe All Records</span>
+            </button>
+          ) : (
+            <div className="p-4 rounded-xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800 space-y-3">
+              <p className="text-xs font-semibold text-rose-900 dark:text-rose-200">
+                Are you sure you want to permanently delete all people and transactions?
+              </p>
+              <div className="flex items-center gap-3">
+                <button
+                  onClick={handleWipeAllData}
+                  disabled={isWipingAll}
+                  className="px-4 py-2 text-xs font-semibold rounded-xl bg-rose-600 hover:bg-rose-700 text-white transition-all cursor-pointer shadow-sm disabled:opacity-50 flex items-center gap-2"
+                >
+                  <Trash2 className="w-3.5 h-3.5" />
+                  <span>{isWipingAll ? 'Wiping Everything...' : 'Yes, Delete All Data'}</span>
+                </button>
+                <button
+                  onClick={() => setShowWipeConfirm(false)}
+                  className="px-3 py-2 text-xs font-semibold rounded-xl bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-300 dark:hover:bg-slate-700 transition-all cursor-pointer"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Persistence & Supabase Integration */}
