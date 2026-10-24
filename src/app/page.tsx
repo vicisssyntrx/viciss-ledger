@@ -277,12 +277,16 @@ export default function DashboardPage() {
                     <div
                       key={person.personId}
                       onClick={() => router.push(`/people/${person.personId}`)}
+                      style={theme.cardStyle}
                       className={`group p-4 rounded-2xl border transition-all flex flex-col justify-between cursor-pointer ${theme.cardClass}`}
                     >
                       <div>
                         <div className="flex items-start justify-between gap-2 mb-3">
                           <div className="flex items-center gap-3">
-                            <div className={`w-11 h-11 rounded-xl font-bold flex items-center justify-center text-sm border shrink-0 transition-transform group-hover:scale-105 ${theme.avatarClass}`}>
+                            <div
+                              style={theme.avatarStyle}
+                              className={`w-11 h-11 rounded-xl font-bold flex items-center justify-center text-sm border shrink-0 transition-transform group-hover:scale-105 ${theme.avatarClass}`}
+                            >
                               {person.personName.substring(0, 2).toUpperCase()}
                             </div>
                             <div>

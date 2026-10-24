@@ -184,10 +184,16 @@ function IndividualLedgerContent() {
         {(() => {
           const theme = getCardTheme(person.color);
           return (
-            <div className={`p-6 rounded-2xl border transition-all mb-6 ${theme.cardClass}`}>
+            <div
+              style={theme.cardStyle}
+              className={`p-6 rounded-2xl border transition-all mb-6 ${theme.cardClass}`}
+            >
               <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
                 <div className="flex items-center gap-4">
-                  <div className={`w-16 h-16 rounded-2xl font-extrabold flex items-center justify-center text-xl border shadow-2xs shrink-0 ${theme.avatarClass}`}>
+                  <div
+                    style={theme.avatarStyle}
+                    className={`w-16 h-16 rounded-2xl font-extrabold flex items-center justify-center text-xl border shadow-2xs shrink-0 ${theme.avatarClass}`}
+                  >
                     {person.name.substring(0, 2).toUpperCase()}
                   </div>
               <div>

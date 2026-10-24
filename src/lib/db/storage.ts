@@ -314,3 +314,73 @@ export function savePersonColor(personId: string, color: string): void {
   }
 }
 
+export interface PersonalAccountSettings {
+  initialBalancePaise: number; // e.g. 17545.52 => 1754552
+  manualAdjustmentsPaise: number; // Sum of manual credits (+ve) and debits (-ve)
+  history: Array<{
+    id: string;
+    type: 'CREDIT' | 'DEBIT' | 'SET';
+    amountPaise: number;
+    description: string;
+    createdAt: string;
+  }>;
+}
+
+const DEFAULT_PERSONAL_ACCOUNT: PersonalAccountSettings = {
+  initialBalancePaise: 1754552, // ₹17,545.52
+  manualAdjustmentsPaise: 0,
+  history: [
+    {
+      id: 'init-seed',
+      type: 'SET',
+      amountPaise: 1754552,
+      description: 'Initial starting balance in personal account',
+      createdAt: new Date().toISOString(),
+    },
+  ],
+};
+
+export function getPersonalAccountSettings(): PersonalAccountSettings {
+  const { dataDir } = getStoragePaths();
+  const file = path.join(dataDir, 'personal_account.json');
+  try {
+    if (fs.existsSync(file)) {
+      const raw = fs.readFileSync(file, 'utf-8');
+      return JSON.parse(raw);
+    }
+  } catch (err) {
+    console.error('Error reading personal account file:', err);
+  }
+  try {
+    const tmpFile = path.join(os.tmpdir(), '.viciss_data', 'personal_account.json');
+    if (fs.existsSync(tmpFile)) {
+      const raw = fs.readFileSync(tmpFile, 'utf-8');
+      return JSON.parse(raw);
+    }
+  } catch (e) {
+    // ignore
+  }
+  return DEFAULT_PERSONAL_ACCOUNT;
+}
+
+export function savePersonalAccountSettings(settings: PersonalAccountSettings): void {
+  const { dataDir } = getStoragePaths();
+  const writeSettings = (targetDir: string) => {
+    if (!fs.existsSync(targetDir)) {
+      fs.mkdirSync(targetDir, { recursive: true });
+    }
+    const file = path.join(targetDir, 'personal_account.json');
+    fs.writeFileSync(file, JSON.stringify(settings, null, 2), 'utf-8');
+  };
+
+  try {
+    writeSettings(dataDir);
+  } catch (err) {
+    try {
+      writeSettings(path.join(os.tmpdir(), '.viciss_data'));
+    } catch (e) {
+      console.error('Failed to save personal account settings:', e);
+    }
+  }
+}
+

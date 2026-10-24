@@ -7,6 +7,7 @@ import {
   LayoutDashboard,
   Users,
   Receipt,
+  Wallet,
   Settings,
   PlusCircle,
   UserPlus,
@@ -78,6 +79,7 @@ export function Navigation({
 
   const navItems = [
     { label: 'Dashboard', href: '/', icon: LayoutDashboard },
+    { label: 'My Account', href: '/my-account', icon: Wallet },
     { label: 'People', href: '/people', icon: Users },
     { label: 'Transactions', href: '/transactions', icon: Receipt },
     { label: 'Settings', href: '/settings', icon: Settings },

@@ -219,13 +219,17 @@ export default function PeoplePage() {
                 <div
                   key={person.personId}
                   onClick={() => router.push(`/people/${person.personId}`)}
+                  style={theme.cardStyle}
                   className={`group p-5 rounded-2xl border transition-all flex flex-col justify-between cursor-pointer ${theme.cardClass}`}
                 >
                   <div>
                     {/* Header: Avatar, Name, and Sharing/Edit Badges */}
                     <div className="flex items-start justify-between gap-3 mb-3">
                       <div className="flex items-center gap-3">
-                        <div className={`w-12 h-12 rounded-xl font-bold flex items-center justify-center text-base border shrink-0 transition-transform group-hover:scale-105 ${theme.avatarClass}`}>
+                        <div
+                          style={theme.avatarStyle}
+                          className={`w-12 h-12 rounded-xl font-bold flex items-center justify-center text-base border shrink-0 transition-transform group-hover:scale-105 ${theme.avatarClass}`}
+                        >
                           {person.personName.substring(0, 2).toUpperCase()}
                         </div>
                         <div>
