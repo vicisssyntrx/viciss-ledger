@@ -24,7 +24,7 @@ import { DeleteConfirmModal } from '@/components/DeleteConfirmModal';
 import { TransactionModal } from '@/components/TransactionModal';
 import { Person, PersonSummary } from '@/lib/accounting/types';
 import { formatINR } from '@/lib/accounting/currency';
-import { getPersonColorConfig } from '@/lib/accounting/personColors';
+import { getCardTheme } from '@/lib/accounting/cardColors';
 
 export default function PeoplePage() {
   const router = useRouter();
@@ -49,12 +49,7 @@ export default function PeoplePage() {
       if (res.ok) {
         const data = await res.json();
         setPeople(data.people || []);
-      }
-      // Also fetch raw people details
-      const detailRes = await fetch(`/api/people?includeArchived=true`);
-      if (detailRes.ok) {
-        const d = await detailRes.json();
-        setRawPeople(d.people || []);
+        setRawPeople(data.rawPeople || []);
       }
     } catch (err) {
       console.error('Failed to load people:', err);
@@ -82,7 +77,8 @@ export default function PeoplePage() {
 
   const handleDelete = async () => {
     if (!personToDelete) return;
-    const res = await fetch(`/api/people/${personToDelete.id}?force=true`, {
+    const id = personToDelete.id || (personToDelete as any).personId;
+    const res = await fetch(`/api/people/${id}?force=true`, {
       method: 'DELETE',
     });
     if (!res.ok) {
@@ -93,8 +89,8 @@ export default function PeoplePage() {
   };
 
   const filtered = people.filter((p) => {
-    const raw = rawPeople.find((rp) => rp.id === p.personId);
-    const isArchived = raw?.isArchived ?? false;
+    const raw = rawPeople.find((rp) => rp.id === p.personId || (rp as any).personId === p.personId);
+    const isArchived = Boolean(p.isArchived ?? raw?.isArchived ?? false);
 
     if (activeTab === 'active' && isArchived) return false;
     if (activeTab === 'archived' && !isArchived) return false;
@@ -152,7 +148,7 @@ export default function PeoplePage() {
                   : 'text-slate-600 dark:text-slate-400 hover:text-slate-900'
               }`}
             >
-              Active People ({people.filter((p) => !rawPeople.find((rp) => rp.id === p.personId)?.isArchived).length})
+              Active People ({people.filter((p) => !(p.isArchived ?? rawPeople.find((rp) => rp.id === p.personId || (rp as any).personId === p.personId)?.isArchived)).length})
             </button>
             <button
               onClick={() => setActiveTab('archived')}
@@ -162,7 +158,7 @@ export default function PeoplePage() {
                   : 'text-slate-600 dark:text-slate-400 hover:text-slate-900'
               }`}
             >
-              Archived ({people.filter((p) => rawPeople.find((rp) => rp.id === p.personId)?.isArchived).length})
+              Archived ({people.filter((p) => Boolean(p.isArchived ?? rawPeople.find((rp) => rp.id === p.personId || (rp as any).personId === p.personId)?.isArchived)).length})
             </button>
           </div>
 
@@ -173,7 +169,7 @@ export default function PeoplePage() {
               placeholder="Search by name or nickname..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-9 pr-3.5 py-2 text-xs rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+              className="w-full pl-9 pr-3.5 py-2 text-xs rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-amber-500"
             />
           </div>
         </div>
@@ -198,72 +194,78 @@ export default function PeoplePage() {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {filtered.map((person) => {
-              const raw = rawPeople.find((rp) => rp.id === person.personId);
+              const raw = rawPeople.find((rp) => rp.id === person.personId || (rp as any).personId === person.personId);
+              const cardColor = person.color || raw?.color || 'default';
+              const theme = getCardTheme(cardColor);
               const isPositive = person.currentBalancePaise > 0;
               const isNegative = person.currentBalancePaise < 0;
-              const colorCfg = getPersonColorConfig(person.color || raw?.color);
+              const isArchived = Boolean(person.isArchived ?? raw?.isArchived ?? false);
+
+              const personObjForModals: Person = raw || ({
+                id: person.personId,
+                ownerId: 'default-owner',
+                name: person.personName,
+                nickname: person.nickname,
+                color: cardColor,
+                isArchived,
+                shareToken: person.shareToken || '',
+                isSharingEnabled: Boolean(person.isSharingEnabled),
+                sharePolicy: 'ALL',
+                createdAt: new Date().toISOString(),
+                updatedAt: new Date().toISOString(),
+              } as Person);
 
               return (
                 <div
                   key={person.personId}
                   onClick={() => router.push(`/people/${person.personId}`)}
-                  className={`group p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-2xs hover:shadow-md hover:border-amber-700/40 dark:hover:border-amber-700/50 transition-all flex flex-col justify-between cursor-pointer ${colorCfg.borderClass}`}
+                  className={`group p-5 rounded-2xl border transition-all flex flex-col justify-between cursor-pointer ${theme.cardClass}`}
                 >
                   <div>
-                    {/* Header: Avatar, Name, and Sharing Badge */}
+                    {/* Header: Avatar, Name, and Sharing/Edit Badges */}
                     <div className="flex items-start justify-between gap-3 mb-3">
                       <div className="flex items-center gap-3">
-                        <div className={`w-12 h-12 rounded-xl ${colorCfg.avatarBgClass} font-bold flex items-center justify-center text-base border shadow-2xs shrink-0 transition-transform group-hover:scale-105`}>
+                        <div className={`w-12 h-12 rounded-xl font-bold flex items-center justify-center text-base border shrink-0 transition-transform group-hover:scale-105 ${theme.avatarClass}`}>
                           {person.personName.substring(0, 2).toUpperCase()}
                         </div>
                         <div>
                           <h3 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white group-hover:text-amber-500 dark:group-hover:text-amber-400 transition-colors leading-tight">
                             {person.personName}
                           </h3>
-                          <div className="flex items-center gap-2 mt-0.5">
-                            {person.nickname && (
-                              <span className="text-xs text-slate-400 font-medium">
-                                @{person.nickname}
-                              </span>
-                            )}
-                            <span className="inline-flex items-center gap-1 text-[10px] font-medium px-1.5 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-400 border border-slate-200/60 dark:border-slate-700/60">
-                              <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: colorCfg.hex }} />
-                              {colorCfg.label}
+                          {person.nickname && (
+                            <span className="text-xs text-slate-400 font-medium mt-0.5 block">
+                              @{person.nickname}
                             </span>
-                          </div>
+                          )}
                         </div>
                       </div>
 
                       <div className="flex items-center gap-1">
-                        {raw && (
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              setSharePerson(raw);
-                            }}
-                            title={raw.isSharingEnabled ? 'Sharing Active' : 'Enable Public Sharing'}
-                            className={`p-1.5 rounded-lg border transition-colors cursor-pointer ${
-                              raw.isSharingEnabled
-                                ? 'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950 dark:text-emerald-300 dark:border-emerald-900'
-                                : 'text-slate-400 border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800'
-                            }`}
-                          >
-                            <Share2 className="w-3.5 h-3.5" />
-                          </button>
-                        )}
-                        {raw && (
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              setPersonToEdit(raw);
-                              setIsAddPersonOpen(true);
-                            }}
-                            title="Edit details"
-                            className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
-                          >
-                            <Edit3 className="w-3.5 h-3.5" />
-                          </button>
-                        )}
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setSharePerson(personObjForModals);
+                          }}
+                          title={personObjForModals.isSharingEnabled ? 'Sharing Active' : 'Enable Public Sharing'}
+                          className={`p-1.5 rounded-lg border transition-colors cursor-pointer ${
+                            personObjForModals.isSharingEnabled
+                              ? 'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950 dark:text-emerald-300 dark:border-emerald-900'
+                              : 'text-slate-400 border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800'
+                          }`}
+                        >
+                          <Share2 className="w-3.5 h-3.5" />
+                        </button>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setPersonToEdit(personObjForModals);
+                            setIsAddPersonOpen(true);
+                          }}
+                          title="Edit details & change card color"
+                          className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+                        >
+                          <Edit3 className="w-3.5 h-3.5" />
+                        </button>
                       </div>
                     </div>
 
@@ -322,7 +324,7 @@ export default function PeoplePage() {
                   {/* Actions & Navigation */}
                   <div className="pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs">
                     <div className="flex items-center gap-2">
-                      {raw?.isArchived ? (
+                      {isArchived ? (
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
@@ -350,7 +352,7 @@ export default function PeoplePage() {
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
-                          if (raw) setPersonToDelete(raw);
+                          setPersonToDelete(personObjForModals);
                         }}
                         className="text-[11px] text-slate-400 hover:text-rose-600 transition-colors p-1 cursor-pointer"
                         title="Delete permanently"
@@ -388,6 +390,7 @@ export default function PeoplePage() {
         onSuccess={fetchPeople}
         people={rawPeople}
         currentPersonId={selectedPersonForTx}
+        onOpenAddPerson={() => setIsAddPersonOpen(true)}
       />
 
       {sharePerson && (

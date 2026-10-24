@@ -26,7 +26,7 @@ function mapPersonFromDb(row: any): Person {
     ownerId: row.owner_id || 'default-owner',
     name: row.name,
     nickname: row.nickname || undefined,
-    color: row.color || undefined,
+    color: row.color || 'default',
     phone: row.phone || undefined,
     email: row.email || undefined,
     notes: row.notes || undefined,
@@ -113,12 +113,13 @@ export async function createPerson(data: {
 }): Promise<Person> {
   const token = generateSecureToken();
   const supabase = getSupabase();
+  const chosenColor = data.color?.trim() || 'default';
 
   if (supabase) {
-    const payload = {
+    const payload: any = {
       name: data.name.trim(),
       nickname: data.nickname?.trim() || null,
-      color: data.color?.trim() || null,
+      color: chosenColor,
       phone: data.phone?.trim() || null,
       email: data.email?.trim() || null,
       notes: data.notes?.trim() || null,
@@ -127,11 +128,24 @@ export async function createPerson(data: {
       is_sharing_enabled: false,
       share_policy: 'ALL',
     };
-    const { data: inserted, error } = await supabase.from('people').insert([payload]).select().single();
+    let { data: inserted, error } = await supabase.from('people').insert([payload]).select().single();
+    if (error && (error.message?.includes('color') || error.code === 'PGRST204' || error.message?.includes('column'))) {
+      delete payload.color;
+      const retry = await supabase.from('people').insert([payload]).select().single();
+      if (!retry.error && retry.data) {
+        inserted = retry.data;
+        error = null;
+      }
+    }
+
     if (error) {
       console.error('Supabase createPerson error, falling back to local DB:', error);
     } else if (inserted) {
-      return mapPersonFromDb(inserted);
+      const res = mapPersonFromDb(inserted);
+      if (!res.color || res.color === 'default') {
+        res.color = chosenColor;
+      }
+      return res;
     }
   }
 
@@ -142,7 +156,7 @@ export async function createPerson(data: {
     ownerId: 'default-owner',
     name: data.name.trim(),
     nickname: data.nickname?.trim(),
-    color: data.color?.trim(),
+    color: chosenColor,
     phone: data.phone?.trim(),
     email: data.email?.trim(),
     notes: data.notes?.trim(),
@@ -164,6 +178,8 @@ export async function updatePerson(
   updates: Partial<Omit<Person, 'id' | 'ownerId' | 'createdAt'>>
 ): Promise<Person> {
   const supabase = getSupabase();
+  let supabaseResult: Person | null = null;
+
   if (supabase) {
     const dbUpdates: any = { updated_at: new Date().toISOString() };
     if (updates.name !== undefined) dbUpdates.name = updates.name;
@@ -177,28 +193,42 @@ export async function updatePerson(
     if (updates.isSharingEnabled !== undefined) dbUpdates.is_sharing_enabled = updates.isSharingEnabled;
     if (updates.sharePolicy !== undefined) dbUpdates.share_policy = updates.sharePolicy;
 
-    const { data, error } = await supabase.from('people').update(dbUpdates).eq('id', id).select().single();
+    let { data, error } = await supabase.from('people').update(dbUpdates).eq('id', id).select().single();
+    if (error && (error.message?.includes('color') || error.code === 'PGRST204' || error.message?.includes('column'))) {
+      delete dbUpdates.color;
+      const retry = await supabase.from('people').update(dbUpdates).eq('id', id).select().single();
+      if (!retry.error && retry.data) {
+        data = retry.data;
+        error = null;
+      }
+    }
     if (!error && data) {
-      return mapPersonFromDb(data);
+      supabaseResult = mapPersonFromDb(data);
+      if (updates.color && (!supabaseResult.color || supabaseResult.color === 'default')) {
+        supabaseResult.color = updates.color;
+      }
     }
   }
 
   const db = readDatabase();
   const index = db.people.findIndex((p) => p.id === id);
-  if (index === -1) {
-    throw new Error(`Person with id ${id} not found`);
+  if (index !== -1) {
+    const existing = db.people[index];
+    const updated: Person = {
+      ...existing,
+      ...updates,
+      updatedAt: new Date().toISOString(),
+    };
+    db.people[index] = updated;
+    writeDatabase(db);
+    return updated;
   }
 
-  const existing = db.people[index];
-  const updated: Person = {
-    ...existing,
-    ...updates,
-    updatedAt: new Date().toISOString(),
-  };
+  if (supabaseResult) {
+    return supabaseResult;
+  }
 
-  db.people[index] = updated;
-  writeDatabase(db);
-  return updated;
+  throw new Error(`Person with id ${id} not found`);
 }
 
 export async function archivePerson(id: string, archived: boolean = true): Promise<Person> {
@@ -207,28 +237,40 @@ export async function archivePerson(id: string, archived: boolean = true): Promi
 
 export async function deletePerson(id: string, force: boolean = false): Promise<void> {
   const supabase = getSupabase();
+  let deletedFromSupabase = false;
+
   if (supabase) {
     if (force) {
       await supabase.from('transactions').delete().eq('person_id', id);
     }
     const { error } = await supabase.from('people').delete().eq('id', id);
-    if (!error) return;
+    if (!error) {
+      deletedFromSupabase = true;
+    }
   }
 
   const db = readDatabase();
-  const hasTransactions = db.transactions.some((t) => t.personId === id);
+  const personIndex = db.people.findIndex((p) => p.id === id);
 
-  if (hasTransactions && !force) {
-    throw new Error(
-      'Cannot delete person with existing transaction records. Please archive them instead or confirm deletion of historical records.'
-    );
+  if (personIndex !== -1) {
+    const hasTransactions = db.transactions.some((t) => t.personId === id);
+    if (hasTransactions && !force) {
+      throw new Error(
+        'Cannot delete person with existing transaction records. Please archive them instead or confirm deletion of historical records.'
+      );
+    }
+
+    db.people.splice(personIndex, 1);
+    if (force) {
+      db.transactions = db.transactions.filter((t) => t.personId !== id);
+    }
+    writeDatabase(db);
+    return;
   }
 
-  db.people = db.people.filter((p) => p.id !== id);
-  if (force) {
-    db.transactions = db.transactions.filter((t) => t.personId !== id);
+  if (deletedFromSupabase) {
+    return;
   }
-  writeDatabase(db);
 }
 
 export async function regenerateShareToken(personId: string): Promise<string> {

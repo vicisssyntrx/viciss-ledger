@@ -202,6 +202,26 @@ export function Navigation({
           <BrandLogo size="sm" showTagline={false} />
         </Link>
         <div className="flex items-center gap-1.5">
+          {onOpenAddPerson && (
+            <button
+              onClick={onOpenAddPerson}
+              className="btn-premium-brown-outline px-2 sm:px-2.5 py-1.5 rounded-lg text-xs flex items-center gap-1 cursor-pointer"
+              title="Add New Person"
+            >
+              <UserPlus className="w-3.5 h-3.5 text-amber-500 shrink-0" />
+              <span className="hidden xs:inline text-xs font-medium">Person</span>
+            </button>
+          )}
+          {onOpenAddTransaction && (
+            <button
+              onClick={onOpenAddTransaction}
+              className="btn-premium-brown px-2.5 sm:px-3 py-1.5 rounded-lg text-xs flex items-center gap-1 cursor-pointer"
+              title="Record Transaction"
+            >
+              <PlusCircle className="w-3.5 h-3.5 text-amber-300 shrink-0" />
+              <span className="hidden xs:inline text-xs">Record</span>
+            </button>
+          )}
           {owner ? (
             <button
               onClick={handleSignOut}
@@ -222,17 +242,9 @@ export function Navigation({
           <button
             onClick={toggleTheme}
             aria-label="Toggle theme"
-            className="p-2 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800"
+            className="p-2 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer"
           >
             {isDark ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-slate-400" />}
-          </button>
-          <button
-            onClick={onOpenAddTransaction}
-            className="btn-premium-brown px-3 py-1.5 rounded-lg text-xs"
-            title="Record Transaction"
-          >
-            <PlusCircle className="w-3.5 h-3.5 text-amber-300" />
-            <span className="hidden xs:inline text-xs">Record</span>
           </button>
         </div>
       </header>

@@ -93,6 +93,7 @@ export interface PersonSummary {
   personName: string;
   nickname?: string;
   color?: string;
+  isArchived: boolean;
   currentBalancePaise: number;
   status: BalanceStatus;
   statusLabel: string;

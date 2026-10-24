@@ -347,6 +347,9 @@ export function summarizePerson(
     personName: person.name,
     nickname: person.nickname,
     color: person.color,
+    isArchived: Boolean(person.isArchived),
+    shareToken: person.shareToken,
+    isSharingEnabled: Boolean(person.isSharingEnabled),
     currentBalancePaise,
     status,
     statusLabel: label,
@@ -362,8 +365,6 @@ export function summarizePerson(
     totalAdjustmentsPaise,
     transactionCount: personTxs.length,
     lastTransactionDate: latestDate,
-    isSharingEnabled: person.isSharingEnabled,
-    shareToken: person.shareToken,
   };
 }
 

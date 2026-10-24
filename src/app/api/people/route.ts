@@ -14,7 +14,10 @@ export async function GET(req: NextRequest) {
 
     const peopleWithSummaries = people.map((p) => summarizePerson(p, transactions));
 
-    return NextResponse.json({ people: peopleWithSummaries });
+    return NextResponse.json({
+      people: peopleWithSummaries,
+      rawPeople: people,
+    });
   } catch (error: any) {
     return NextResponse.json({ error: error?.message || 'Failed to fetch people' }, { status: 500 });
   }
@@ -38,7 +41,7 @@ export async function POST(req: NextRequest) {
     });
 
     const summary = summarizePerson(created, []);
-    return NextResponse.json({ person: summary }, { status: 201 });
+    return NextResponse.json({ person: summary, rawPerson: created }, { status: 201 });
   } catch (error: any) {
     return NextResponse.json({ error: error?.message || 'Failed to create person' }, { status: 500 });
   }

@@ -1,9 +1,9 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { X, User, Phone, Mail, FileText, ShieldAlert, Check, Palette } from 'lucide-react';
+import { X, User, Phone, Mail, FileText, ShieldAlert, Palette } from 'lucide-react';
 import { Person } from '@/lib/accounting/types';
-import { PERSON_COLORS } from '@/lib/accounting/personColors';
+import { CARD_COLORS } from '@/lib/accounting/cardColors';
 
 interface PersonModalProps {
   isOpen: boolean;
@@ -20,7 +20,7 @@ export function PersonModal({
 }: PersonModalProps) {
   const [name, setName] = useState('');
   const [nickname, setNickname] = useState('');
-  const [color, setColor] = useState('amber');
+  const [color, setColor] = useState('default');
   const [phone, setPhone] = useState('');
   const [email, setEmail] = useState('');
   const [notes, setNotes] = useState('');
@@ -31,20 +31,42 @@ export function PersonModal({
     if (personToEdit) {
       setName(personToEdit.name);
       setNickname(personToEdit.nickname || '');
-      setColor(personToEdit.color || 'amber');
+      setColor(personToEdit.color || 'default');
       setPhone(personToEdit.phone || '');
       setEmail(personToEdit.email || '');
       setNotes(personToEdit.notes || '');
     } else {
       setName('');
       setNickname('');
-      setColor('amber');
+      setColor('default');
       setPhone('');
       setEmail('');
       setNotes('');
     }
     setError(null);
   }, [personToEdit, isOpen]);
+
+  // Lock body scroll while modal is active on mobile/desktop
+  useEffect(() => {
+    if (isOpen) {
+      const originalStyle = document.body.style.overflow;
+      document.body.style.overflow = 'hidden';
+      return () => {
+        document.body.style.overflow = originalStyle;
+      };
+    }
+  }, [isOpen]);
+
+  // Close on Escape key
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && isOpen && !isSubmitting) {
+        onClose();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, isSubmitting, onClose]);
 
   if (!isOpen) return null;
 
@@ -62,7 +84,7 @@ export function PersonModal({
       const payload = {
         name: name.trim(),
         nickname: nickname.trim() || undefined,
-        color: color || 'amber',
+        color: color || 'default',
         phone: phone.trim() || undefined,
         email: email.trim() || undefined,
         notes: notes.trim() || undefined,
@@ -92,87 +114,107 @@ export function PersonModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-950/75 backdrop-blur-sm overflow-y-auto">
-      <div className="relative w-full max-w-md my-auto bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 overflow-hidden max-h-[92vh] flex flex-col">
-        {/* Header */}
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-950/80 backdrop-blur-sm overflow-y-auto"
+      onClick={(e) => {
+        // Close when clicking the outer backdrop
+        if (e.target === e.currentTarget && !isSubmitting) {
+          onClose();
+        }
+      }}
+    >
+      <div
+        className="relative w-full max-w-md my-auto bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 overflow-hidden max-h-[90vh] flex flex-col"
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* Header (pinned at top) */}
         <div className="flex items-center justify-between px-5 sm:px-6 py-3.5 sm:py-4 border-b border-slate-200 dark:border-slate-800 shrink-0">
-          <h2 className="text-base sm:text-lg font-semibold text-slate-900 dark:text-white">
-            {personToEdit ? 'Edit Person' : 'Add New Person'}
-          </h2>
+          <div>
+            <h2 className="text-base sm:text-lg font-semibold text-slate-900 dark:text-white">
+              {personToEdit ? 'Edit Person' : 'Add New Person'}
+            </h2>
+            <p className="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400">
+              {personToEdit ? 'Update details and contact info' : 'Create an individual financial ledger'}
+            </p>
+          </div>
           <button
+            type="button"
             onClick={onClose}
-            className="p-1.5 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+            disabled={isSubmitting}
+            aria-label="Close modal"
+            className="p-2 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
-        {/* Form Body */}
-        <form onSubmit={handleSubmit} className="p-4 sm:p-6 space-y-4 overflow-y-auto flex-1">
+        {/* Form Body (Scrollable with overscroll containment) */}
+        <form id="person-modal-form" onSubmit={handleSubmit} className="p-4 sm:p-6 space-y-4 overflow-y-auto flex-1 overscroll-contain">
           {error && (
-            <div className="p-3 text-xs rounded-lg bg-rose-50 dark:bg-rose-950/40 text-rose-700 dark:text-rose-300 border border-rose-200 dark:border-rose-900/60">
+            <div className="p-3 text-xs rounded-xl bg-rose-50 dark:bg-rose-950/40 text-rose-700 dark:text-rose-300 border border-rose-200 dark:border-rose-900/60 font-medium">
               {error}
             </div>
           )}
 
           <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-300 mb-1">
+            <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-300 mb-1.5">
               Full Name *
             </label>
             <div className="relative">
-              <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+              <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
               <input
                 type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder="e.g. Rahul Sharma"
-                className="w-full pl-9 pr-3.5 py-2.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                className="w-full pl-9 pr-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-base sm:text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 min-h-[44px]"
                 required
+                autoFocus
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-300 mb-1">
-              Nickname / Display Short Name
+            <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-300 mb-1.5">
+              Nickname / Short Display Name
             </label>
             <input
               type="text"
               value={nickname}
               onChange={(e) => setNickname(e.target.value)}
               placeholder="e.g. Rahul"
-              className="w-full px-3.5 py-2 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
+              className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-base sm:text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 min-h-[44px]"
             />
           </div>
 
-          {/* Card Organization Color */}
           <div>
             <div className="flex items-center justify-between mb-1.5">
-              <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-300 flex items-center gap-1.5">
-                <Palette className="w-3.5 h-3.5 text-amber-500" />
-                <span>Card Organization Color</span>
+              <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-300">
+                Card Theme Color
               </label>
-              <span className="text-[11px] font-medium text-slate-400">
-                {PERSON_COLORS.find((c) => c.id === color)?.label || 'Amber Gold'}
+              <span className="text-[11px] text-slate-400">
+                Tints the entire ledger card
               </span>
             </div>
-            <div className="grid grid-cols-4 sm:grid-cols-8 gap-2 pt-1">
-              {PERSON_COLORS.map((c) => {
-                const isSelected = color === c.id;
+            <div className="flex flex-wrap items-center gap-2.5 p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200/80 dark:border-slate-700/80">
+              {CARD_COLORS.map((c) => {
+                const isSelected = (color || 'default') === c.id;
                 return (
                   <button
                     key={c.id}
                     type="button"
                     onClick={() => setColor(c.id)}
                     title={c.label}
-                    className={`h-9 rounded-xl flex items-center justify-center transition-all cursor-pointer relative ${
+                    className={`relative w-8 h-8 rounded-full transition-all cursor-pointer flex items-center justify-center border-2 ${
                       isSelected
-                        ? 'ring-2 ring-white scale-105 shadow-md shadow-black/40'
-                        : 'opacity-70 hover:opacity-100 hover:scale-105'
+                        ? 'scale-110 ring-2 ring-amber-500 ring-offset-2 ring-offset-white dark:ring-offset-slate-900 border-white dark:border-slate-800 shadow-md'
+                        : 'border-transparent hover:scale-105 opacity-80 hover:opacity-100'
                     }`}
                     style={{ backgroundColor: c.hex }}
                   >
-                    {isSelected && <Check className="w-4 h-4 text-white drop-shadow" />}
+                    {isSelected && (
+                      <span className="w-2.5 h-2.5 rounded-full bg-white dark:bg-slate-950 shadow-xs" />
+                    )}
                   </button>
                 );
               })}
@@ -181,79 +223,80 @@ export function PersonModal({
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-300 mb-1">
+              <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-300 mb-1.5">
                 Phone (Optional)
               </label>
               <div className="relative">
-                <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400" />
+                <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
                 <input
                   type="tel"
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
                   placeholder="+91..."
-                  className="w-full pl-8 pr-3 py-2 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-xs focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                  className="w-full pl-9 pr-3 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-base sm:text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 min-h-[44px]"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-300 mb-1">
+              <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-300 mb-1.5">
                 Email (Optional)
               </label>
               <div className="relative">
-                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400" />
+                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
                 <input
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="name@email.com"
-                  className="w-full pl-8 pr-3 py-2 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-xs focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                  className="w-full pl-9 pr-3 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-base sm:text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 min-h-[44px]"
                 />
               </div>
             </div>
           </div>
 
           <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-300 mb-1">
+            <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-300 mb-1.5">
               Private Notes (Never shared publicly)
             </label>
             <div className="relative">
-              <FileText className="absolute left-3 top-3 w-3.5 h-3.5 text-slate-400" />
+              <FileText className="absolute left-3 top-3 w-4 h-4 text-slate-400 pointer-events-none" />
               <textarea
                 rows={2}
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
                 placeholder="Context, relation, bank UPI handles, reminders..."
-                className="w-full pl-8 pr-3 py-2 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-xs focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                className="w-full pl-9 pr-3 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-base sm:text-sm focus:outline-none focus:ring-2 focus:ring-amber-500"
               />
             </div>
           </div>
 
           {/* Privacy badge */}
-          <div className="flex items-center gap-2 p-2.5 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 text-emerald-800 dark:text-emerald-300 text-[11px] border border-emerald-200 dark:border-emerald-900/60">
-            <ShieldAlert className="w-4 h-4 shrink-0 text-emerald-600" />
-            <span>Contact details and notes are strictly private and never exposed to shared public links.</span>
-          </div>
-
-          {/* Footer Actions */}
-          <div className="flex items-center justify-end gap-3 pt-3 border-t border-slate-200 dark:border-slate-800 shrink-0">
-            <button
-              type="button"
-              onClick={onClose}
-              disabled={isSubmitting}
-              className="btn-premium-brown-outline px-4 py-2.5 text-xs sm:text-sm rounded-xl"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              disabled={isSubmitting}
-              className="btn-premium-brown px-5 py-2.5 text-xs sm:text-sm rounded-xl"
-            >
-              {isSubmitting ? 'Saving...' : personToEdit ? 'Save Changes' : 'Create Person'}
-            </button>
+          <div className="flex items-center gap-2 p-2.5 rounded-xl bg-amber-50 dark:bg-amber-950/40 text-amber-900 dark:text-amber-200 text-[11px] border border-amber-200 dark:border-amber-900/60">
+            <ShieldAlert className="w-4 h-4 shrink-0 text-amber-600 dark:text-amber-400" />
+            <span>Contact details and notes are strictly private to you and never shared publicly.</span>
           </div>
         </form>
+
+        {/* Footer Actions (Pinned at bottom, always visible & easy to tap on mobile) */}
+        <div className="flex items-center justify-end gap-3 px-5 sm:px-6 py-3.5 sm:py-4 border-t border-slate-200 dark:border-slate-800 shrink-0 bg-white dark:bg-slate-900">
+          <button
+            type="button"
+            onClick={onClose}
+            disabled={isSubmitting}
+            className="btn-premium-brown-outline px-4 py-2.5 text-xs sm:text-sm rounded-xl min-h-[44px]"
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            form="person-modal-form"
+            disabled={isSubmitting}
+            className="btn-premium-brown px-5 py-2.5 text-xs sm:text-sm rounded-xl min-h-[44px]"
+          >
+            {isSubmitting ? 'Saving...' : personToEdit ? 'Save Changes' : 'Create Person'}
+          </button>
+        </div>
       </div>
     </div>
   );

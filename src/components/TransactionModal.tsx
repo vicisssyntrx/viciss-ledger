@@ -35,6 +35,7 @@ interface TransactionModalProps {
   people: Person[];
   currentPersonId?: string;
   initialTransaction?: Transaction | null;
+  onOpenAddPerson?: () => void;
 }
 
 const CATEGORY_PRESETS = [
@@ -58,6 +59,7 @@ export function TransactionModal({
   people,
   currentPersonId,
   initialTransaction,
+  onOpenAddPerson,
 }: TransactionModalProps) {
   const [selectedPersonId, setSelectedPersonId] = useState<string>(
     initialTransaction?.personId || currentPersonId || (people[0]?.id ?? '')
@@ -307,13 +309,27 @@ export function TransactionModal({
 
           {/* Person Selection */}
           <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-300 mb-1.5">
-              Person
-            </label>
+            <div className="flex items-center justify-between mb-1.5">
+              <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-300">
+                Person
+              </label>
+              {onOpenAddPerson && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    onClose();
+                    onOpenAddPerson();
+                  }}
+                  className="text-xs font-medium text-amber-600 dark:text-amber-400 hover:underline cursor-pointer"
+                >
+                  + Add New Person
+                </button>
+              )}
+            </div>
             <select
               value={selectedPersonId}
               onChange={(e) => setSelectedPersonId(e.target.value)}
-              className="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
+              className="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-base sm:text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
               required
             >
               {people.map((p) => (
@@ -322,6 +338,11 @@ export function TransactionModal({
                 </option>
               ))}
             </select>
+            {people.length === 0 && onOpenAddPerson && (
+              <p className="mt-1.5 text-xs text-rose-500">
+                No people available. <button type="button" onClick={() => { onClose(); onOpenAddPerson(); }} className="underline font-semibold cursor-pointer">Click here to add someone</button> first.
+              </p>
+            )}
           </div>
 
           {/* Transaction Type Buttons */}

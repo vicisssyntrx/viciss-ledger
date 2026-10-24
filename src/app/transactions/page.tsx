@@ -21,6 +21,7 @@ import {
 } from 'lucide-react';
 import { Navigation } from '@/components/Navigation';
 import { TransactionModal } from '@/components/TransactionModal';
+import { PersonModal } from '@/components/PersonModal';
 import { DeleteConfirmModal } from '@/components/DeleteConfirmModal';
 import { Transaction, Person } from '@/lib/accounting/types';
 import { formatINR } from '@/lib/accounting/currency';
@@ -29,6 +30,7 @@ export default function TransactionsPage() {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [people, setPeople] = useState<Person[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isAddPersonOpen, setIsAddPersonOpen] = useState(false);
 
   // Filters
   const [searchQuery, setSearchQuery] = useState('');
@@ -174,6 +176,7 @@ export default function TransactionsPage() {
           setTxToEdit(null);
           setIsAddTxOpen(true);
         }}
+        onOpenAddPerson={() => setIsAddPersonOpen(true)}
       />
 
       <main className="flex-1 min-w-0 w-full pb-28 md:pb-12 pt-4 sm:pt-6 px-3.5 sm:px-6 md:px-8 max-w-7xl mx-auto">
@@ -593,6 +596,13 @@ export default function TransactionsPage() {
         onSuccess={fetchData}
         people={people}
         initialTransaction={txToEdit}
+        onOpenAddPerson={() => setIsAddPersonOpen(true)}
+      />
+
+      <PersonModal
+        isOpen={isAddPersonOpen}
+        onClose={() => setIsAddPersonOpen(false)}
+        onSuccess={fetchData}
       />
 
       {txToDelete && (

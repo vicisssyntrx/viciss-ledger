@@ -28,7 +28,7 @@ import { PersonModal } from '@/components/PersonModal';
 import { ShareModal } from '@/components/ShareModal';
 import { DashboardSummary, PersonSummary, Transaction, Person } from '@/lib/accounting/types';
 import { formatINR } from '@/lib/accounting/currency';
-import { getPersonColorConfig } from '@/lib/accounting/personColors';
+import { getCardTheme } from '@/lib/accounting/cardColors';
 
 export default function DashboardPage() {
   const router = useRouter();
@@ -61,7 +61,7 @@ export default function DashboardPage() {
 
       if (peopleRes.ok) {
         const data = await peopleRes.json();
-        setRawPeople(data.people || []);
+        setRawPeople(data.rawPeople || data.people || []);
       }
     } catch (err) {
       console.error('Failed to load dashboard data:', err);
@@ -252,58 +252,65 @@ export default function DashboardPage() {
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                 {filteredPeople.map((person) => {
-                  const rawP = rawPeople.find((p) => p.id === person.personId);
+                  const rawP = rawPeople.find((p) => p.id === person.personId || (p as any).personId === person.personId);
+                  const cardColor = person.color || rawP?.color || 'default';
+                  const theme = getCardTheme(cardColor);
                   const isPositive = person.currentBalancePaise > 0;
                   const isNegative = person.currentBalancePaise < 0;
                   const isSettled = person.currentBalancePaise === 0;
-                  const colorCfg = getPersonColorConfig(person.color || rawP?.color);
+
+                  const personForShare: Person = rawP || ({
+                    id: person.personId,
+                    ownerId: 'default-owner',
+                    name: person.personName,
+                    nickname: person.nickname,
+                    color: cardColor,
+                    isArchived: person.isArchived,
+                    shareToken: person.shareToken || '',
+                    isSharingEnabled: Boolean(person.isSharingEnabled),
+                    sharePolicy: 'ALL',
+                    createdAt: new Date().toISOString(),
+                    updatedAt: new Date().toISOString(),
+                  } as Person);
 
                   return (
                     <div
                       key={person.personId}
                       onClick={() => router.push(`/people/${person.personId}`)}
-                      className={`group p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 hover:border-amber-700/40 dark:hover:border-amber-700/50 transition-all shadow-2xs hover:shadow-md flex flex-col justify-between cursor-pointer ${colorCfg.borderClass}`}
+                      className={`group p-4 rounded-2xl border transition-all flex flex-col justify-between cursor-pointer ${theme.cardClass}`}
                     >
                       <div>
                         <div className="flex items-start justify-between gap-2 mb-3">
                           <div className="flex items-center gap-3">
-                            <div className={`w-11 h-11 rounded-xl ${colorCfg.avatarBgClass} font-bold flex items-center justify-center text-sm border shadow-2xs shrink-0 transition-transform group-hover:scale-105`}>
+                            <div className={`w-11 h-11 rounded-xl font-bold flex items-center justify-center text-sm border shrink-0 transition-transform group-hover:scale-105 ${theme.avatarClass}`}>
                               {person.personName.substring(0, 2).toUpperCase()}
                             </div>
                             <div>
                               <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white group-hover:text-amber-500 dark:group-hover:text-amber-400 transition-colors leading-tight">
                                 {person.personName}
                               </h3>
-                              <div className="flex items-center gap-2 mt-0.5">
-                                {person.nickname && (
-                                  <span className="text-xs text-slate-400 font-medium">
-                                    @{person.nickname}
-                                  </span>
-                                )}
-                                <span className="inline-flex items-center gap-1 text-[10px] font-medium px-1.5 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-400 border border-slate-200/60 dark:border-slate-700/60">
-                                  <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: colorCfg.hex }} />
-                                  {colorCfg.label}
+                              {person.nickname && (
+                                <span className="text-xs text-slate-400 font-medium mt-0.5 block">
+                                  @{person.nickname}
                                 </span>
-                              </div>
+                              )}
                             </div>
                           </div>
 
-                          {rawP && (
-                            <button
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                setSharePerson(rawP);
-                              }}
-                              title={rawP.isSharingEnabled ? 'Sharing Active' : 'Enable Public Sharing'}
-                              className={`p-1.5 rounded-lg border transition-colors cursor-pointer ${
-                                rawP.isSharingEnabled
-                                  ? 'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/60 dark:text-emerald-300 dark:border-emerald-900'
-                                  : 'text-slate-400 border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800'
-                              }`}
-                            >
-                              <Share2 className="w-3.5 h-3.5" />
-                            </button>
-                          )}
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setSharePerson(personForShare);
+                            }}
+                            title={personForShare.isSharingEnabled ? 'Sharing Active' : 'Enable Public Sharing'}
+                            className={`p-1.5 rounded-lg border transition-colors cursor-pointer ${
+                              personForShare.isSharingEnabled
+                                ? 'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/60 dark:text-emerald-300 dark:border-emerald-900'
+                                : 'text-slate-400 border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800'
+                            }`}
+                          >
+                            <Share2 className="w-3.5 h-3.5" />
+                          </button>
                         </div>
 
                         {/* Balance readout */}
@@ -457,6 +464,7 @@ export default function DashboardPage() {
         onClose={() => setIsAddTxOpen(false)}
         onSuccess={fetchDashboardData}
         people={rawPeople}
+        onOpenAddPerson={() => setIsAddPersonOpen(true)}
       />
 
       <PersonModal

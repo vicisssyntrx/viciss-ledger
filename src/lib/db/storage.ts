@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import crypto from 'crypto';
+import os from 'os';
 import { Person, Transaction } from '../accounting/types';
 import { calculateBalanceEffectPaise } from '../accounting/engine';
 import { rupeesToPaise } from '../accounting/currency';
@@ -11,9 +12,6 @@ interface DatabaseSchema {
   version: number;
 }
 
-const DATA_DIR = path.join(process.cwd(), '.data');
-const DB_FILE = path.join(DATA_DIR, 'viciss_db.json');
-
 const INITIAL_SEED_DATA: DatabaseSchema = {
   version: 1,
   people: [
@@ -22,6 +20,7 @@ const INITIAL_SEED_DATA: DatabaseSchema = {
       ownerId: 'default-owner',
       name: 'Rahul Sharma',
       nickname: 'Rahul',
+      color: 'amber',
       phone: '+91 98765 43210',
       email: 'rahul.sharma@example.com',
       notes: 'Colleague & weekend badminton partner',
@@ -37,6 +36,7 @@ const INITIAL_SEED_DATA: DatabaseSchema = {
       ownerId: 'default-owner',
       name: 'Priya Patel',
       nickname: 'Priya',
+      color: 'emerald',
       phone: '+91 98123 45678',
       email: 'priya.patel@example.com',
       notes: 'Flatmate - split rent & groceries',
@@ -52,6 +52,7 @@ const INITIAL_SEED_DATA: DatabaseSchema = {
       ownerId: 'default-owner',
       name: 'Arjun Verma',
       nickname: 'Arjun',
+      color: 'blue',
       phone: '+91 97654 32109',
       notes: 'College friend',
       isArchived: false,
@@ -137,33 +138,131 @@ const INITIAL_SEED_DATA: DatabaseSchema = {
   ],
 };
 
-function ensureDbFile(): void {
-  if (!fs.existsSync(DATA_DIR)) {
-    fs.mkdirSync(DATA_DIR, { recursive: true });
+function isServerless(): boolean {
+  return Boolean(
+    process.env.VERCEL ||
+    process.env.AWS_LAMBDA_FUNCTION_NAME ||
+    process.env.AWS_EXECUTION_ENV ||
+    process.cwd().startsWith('/var/task')
+  );
+}
+
+function getStoragePaths() {
+  if (isServerless()) {
+    const dir = path.join(os.tmpdir(), '.viciss_data');
+    return {
+      dataDir: dir,
+      dbFile: path.join(dir, 'viciss_db.json'),
+    };
   }
-  if (!fs.existsSync(DB_FILE)) {
-    fs.writeFileSync(DB_FILE, JSON.stringify(INITIAL_SEED_DATA, null, 2), 'utf-8');
+  const dir = path.join(process.cwd(), '.data');
+  return {
+    dataDir: dir,
+    dbFile: path.join(dir, 'viciss_db.json'),
+  };
+}
+
+let inMemoryCache: DatabaseSchema | null = null;
+
+function ensureDbFile(): string {
+  const { dataDir, dbFile } = getStoragePaths();
+
+  try {
+    if (!fs.existsSync(dataDir)) {
+      fs.mkdirSync(dataDir, { recursive: true });
+    }
+  } catch (e) {
+    console.warn('Could not create data directory, using in-memory fallback if needed:', e);
   }
+
+  try {
+    if (!fs.existsSync(dbFile)) {
+      // Check if repo seed file exists in cwd
+      const repoDbFile = path.join(process.cwd(), '.data', 'viciss_db.json');
+      let seedContent = JSON.stringify(INITIAL_SEED_DATA, null, 2);
+      if (fs.existsSync(repoDbFile)) {
+        try {
+          seedContent = fs.readFileSync(repoDbFile, 'utf-8');
+        } catch (err) {
+          console.warn('Could not read repo db file, using initial seed:', err);
+        }
+      }
+
+      fs.writeFileSync(dbFile, seedContent, 'utf-8');
+    }
+  } catch (err) {
+    console.warn('Could not write db seed to file, operating with in-memory store:', err);
+  }
+
+  return dbFile;
 }
 
 export function readDatabase(): DatabaseSchema {
-  ensureDbFile();
+  const dbFile = ensureDbFile();
   try {
-    const raw = fs.readFileSync(DB_FILE, 'utf-8');
-    return JSON.parse(raw) as DatabaseSchema;
+    if (fs.existsSync(dbFile)) {
+      const raw = fs.readFileSync(dbFile, 'utf-8');
+      const parsed = JSON.parse(raw) as DatabaseSchema;
+      inMemoryCache = parsed;
+      return parsed;
+    }
   } catch (err) {
-    console.error('Error reading database file, resetting to seed:', err);
-    return INITIAL_SEED_DATA;
+    console.error('Error reading database file:', err);
   }
+
+  if (inMemoryCache) {
+    return inMemoryCache;
+  }
+
+  // Also check repo fallback
+  const repoDbFile = path.join(process.cwd(), '.data', 'viciss_db.json');
+  if (fs.existsSync(repoDbFile)) {
+    try {
+      const raw = fs.readFileSync(repoDbFile, 'utf-8');
+      const parsed = JSON.parse(raw) as DatabaseSchema;
+      inMemoryCache = parsed;
+      return parsed;
+    } catch (e) {
+      // ignore
+    }
+  }
+
+  inMemoryCache = INITIAL_SEED_DATA;
+  return INITIAL_SEED_DATA;
 }
 
 export function writeDatabase(data: DatabaseSchema): void {
-  ensureDbFile();
-  const tempFile = `${DB_FILE}.tmp.${Date.now()}`;
-  fs.writeFileSync(tempFile, JSON.stringify(data, null, 2), 'utf-8');
-  fs.renameSync(tempFile, DB_FILE);
+  inMemoryCache = data;
+  const { dataDir, dbFile } = getStoragePaths();
+
+  const writeToFile = (targetDir: string, targetFile: string) => {
+    if (!fs.existsSync(targetDir)) {
+      fs.mkdirSync(targetDir, { recursive: true });
+    }
+    const tempFile = `${targetFile}.tmp.${Date.now()}.${Math.random().toString(36).substring(2, 6)}`;
+    fs.writeFileSync(tempFile, JSON.stringify(data, null, 2), 'utf-8');
+    fs.renameSync(tempFile, targetFile);
+  };
+
+  try {
+    writeToFile(dataDir, dbFile);
+  } catch (err: any) {
+    // If we hit EROFS or permission error, fall back immediately to os.tmpdir()
+    if (err?.code === 'EROFS' || err?.message?.includes('read-only')) {
+      try {
+        const tmpDir = path.join(os.tmpdir(), '.viciss_data');
+        const tmpFile = path.join(tmpDir, 'viciss_db.json');
+        writeToFile(tmpDir, tmpFile);
+        return;
+      } catch (tmpErr) {
+        console.error('Fallback write to tmpdir also failed, kept in memory:', tmpErr);
+      }
+    }
+    console.error('writeDatabase file write error (retained in memory):', err);
+  }
 }
 
 export function generateSecureToken(): string {
   return `vcs_${crypto.randomBytes(24).toString('hex')}`;
 }
+
