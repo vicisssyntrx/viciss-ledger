@@ -197,7 +197,7 @@ export async function POST(req: NextRequest) {
     }
 
     if (body.action === 'RESET') {
-      const resetBasePaise = body.amountRupees !== undefined ? rupeesToPaise(body.amountRupees) : 1754552;
+      const resetBasePaise = body.amountRupees !== undefined ? rupeesToPaise(body.amountRupees) : 1700000;
       settings.initialBalancePaise = resetBasePaise;
       settings.manualAdjustmentsPaise = 0;
       settings.history = [

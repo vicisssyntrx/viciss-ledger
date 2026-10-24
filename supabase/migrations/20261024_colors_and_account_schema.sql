@@ -29,7 +29,7 @@ check (adjustment_direction in (
 create table if not exists public.personal_account_settings (
     id text primary key default 'primary',
     owner_id uuid not null default coalesce(auth.uid(), '00000000-0000-0000-0000-000000000000'::uuid),
-    initial_balance_paise bigint not null default 1754552, -- ₹17,545.52
+    initial_balance_paise bigint not null default 1700000, -- ₹17,000.00 (17k baseline)
     manual_adjustments_paise bigint not null default 0,
     history jsonb not null default '[]'::jsonb,
     updated_at timestamptz not null default now()
@@ -48,8 +48,8 @@ create policy "Owners have full access to personal_account_settings"
 insert into public.personal_account_settings (id, initial_balance_paise, manual_adjustments_paise, history)
 values (
     'primary',
-    1754552,
+    1700000,
     0,
-    '[{"id":"init-seed","type":"SET","amountPaise":1754552,"description":"Initial starting balance in personal account","createdAt":"2026-10-24T06:00:00Z"}]'::jsonb
+    '[{"id":"init-seed","type":"SET","amountPaise":1700000,"description":"Initial starting balance in personal account","createdAt":"2026-10-24T06:00:00Z"}]'::jsonb
 )
 on conflict (id) do nothing;

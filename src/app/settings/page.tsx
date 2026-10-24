@@ -23,7 +23,7 @@ export default function SettingsPage() {
   const [isExporting, setIsExporting] = useState(false);
   const [isImporting, setIsImporting] = useState(false);
   const [isResettingBalance, setIsResettingBalance] = useState(false);
-  const [resetBaseAmount, setResetBaseAmount] = useState('17545.52');
+  const [resetBaseAmount, setResetBaseAmount] = useState('17000.00');
   const [showResetConfirm, setShowResetConfirm] = useState(false);
   const [statusMessage, setStatusMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
 
@@ -87,7 +87,7 @@ export default function SettingsPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           action: 'RESET',
-          amountRupees: 17545.52,
+          amountRupees: 17000.00,
         }),
       });
 
@@ -268,7 +268,7 @@ export default function SettingsPage() {
                   min="0"
                   value={resetBaseAmount}
                   onChange={(e) => setResetBaseAmount(e.target.value)}
-                  placeholder="17545.52"
+                  placeholder="17000.00"
                   className="w-full pl-8 pr-3.5 py-2.5 text-xs rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-900 dark:text-white font-mono focus:outline-none focus:ring-2 focus:ring-amber-500"
                 />
               </div>
@@ -302,7 +302,7 @@ export default function SettingsPage() {
               )}
             </div>
             <p className="text-[11px] text-slate-400">
-              Default starting personal money is ₹17,545.52. All active Custodial deposits will continue to be safely separated.
+              Default starting personal baseline is ₹17,000.00 (17k). All active Custodial deposits will continue to be safely separated.
             </p>
           </div>
         </div>
